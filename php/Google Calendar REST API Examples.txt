@@ -1,0 +1,47 @@
+POST https://www.googleapis.com/gmail/v1/users/me/messages/send
+Authorization: Bearer [YOUR_BEARER_TOKEN]
+Accept: application/json
+Content-Type: application/json
+
+{
+  "raw": "RnJvbTogczE2MDQxNjAyNEBzdHVkZW50LnViYXlhLmFjLmlkDQpUbzogdGFudXdpamF5YS5rcmlzdGlhbkBnbWFpbC5jb20NClN1YmplY3Q6IFN1YmplY3QgVGV4dA0KDQpoZWxsbyB3b3JsZCEgdGhpcyBtYWlsIGlzIGZvciB0YW51d2lqYXlhLmtyaXN0aWFuQGdtYWlsLmNvbQ"
+}
+
+
+
+note: dari mana RAW tersebut di body?
+
+dari:
+"""
+From: s160416024@student.ubaya.ac.id
+To: tanuwijaya.kristian@gmail.com
+Subject: Subject Text
+
+hello world! this mail is for tanuwijaya.kristian@gmail.com
+"""
+
+lalu di-base64 encode jadi
+RnJvbTogczE2MDQxNjAyNEBzdHVkZW50LnViYXlhLmFjLmlkClRvOiB0YW51d2lqYXlhLmtyaXN0aWFuQGdtYWlsLmNvbQpTdWJqZWN0OiBTdWJqZWN0IFRleHQKCmhlbGxvIHdvcmxkISB0aGlzIG1haWwgaXMgZm9yIHRhbnV3aWpheWEua3Jpc3RpYW5AZ21haWwuY29t
+
+note about base64 encoding:
+use https://www.base64encode.org/ for exact string to base64
+if using notepad++ plugin mime tools, must:
+replace all "+" with "-", replace all "/" with "_", and remove the trailing "=" to make it URL-safe
+
+limit: one day
+Daily Usage = 1,000,000,000 quota units per day, 250 quota units per user per second
+messages.send = 100
+
+periodic sending with cronjob: max 100mail/day = max 4mail/hour = max 1mail/15mnt
+
+
+note: mail RFC2822
+https://tools.ietf.org/html/rfc2822#section-2.2
+use CRLF ("\r\n") for line ending rather than LF ("\n")
+
+other headers:
+From:
+Sender:
+Reply-To:
+Date:
+cc, bcc

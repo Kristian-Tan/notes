@@ -1,0 +1,222 @@
+in document root, create/edit '.htaccess" file, add these lines:
+
+# error pages directives
+ErrorDocument 400 /error.php?errorcode=400
+ErrorDocument 401 /error.php?errorcode=401
+ErrorDocument 403 /error.php?errorcode=403
+ErrorDocument 404 /error.php?errorcode=404
+ErrorDocument 500 /error.php?errorcode=500
+ErrorDocument 502 /error.php?errorcode=502
+ErrorDocument 503 /error.php?errorcode=503
+ErrorDocument 504 /error.php?errorcode=504
+
+
+
+in document root, create file "error.php"
+
+<?php
+$homeUrl = "http://localhost/www";
+$siteUrl = "http://localhost";
+$siteTitle = "Kristian's Site";
+$webadminEmail = "admin@kristian.zz.mu";
+$webadminName = "Admin";
+$copyrightYear = "2016 - 2017";
+switch ($_GET['errorcode']) 
+{
+	case "400": 
+        $errorCode = 403; $errorCode1 = 4; $errorCode2 = 0; $errorCode3 = 0;
+		$errorMessage = "Bad Request";
+		$errorDescription = "for some reason your request was not in correct HTTP format";
+        break;
+ 	case "401": 
+        $errorCode = 403; $errorCode1 = 4; $errorCode2 = 0; $errorCode3 = 1;
+		$errorMessage = "Unauthorized Access";
+		$errorDescription = "for some reason the page you requested requires authorizetion";
+        break;
+    case "403": 
+        $errorCode = 403; $errorCode1 = 4; $errorCode2 = 0; $errorCode3 = 3;
+		$errorMessage = "File Access Forbidden";
+		$errorDescription = "for some reason the page you requested was a forbidden page";
+        break;
+    case "404": 
+        $errorCode = 404; $errorCode1 = 4; $errorCode2 = 0; $errorCode3 = 4;
+		$errorMessage = "Page Not Found";
+		$errorDescription = "for some reason the page you requested could not be found on our server";
+        break;
+    case "500": 
+        $errorCode = 500; $errorCode1 = 5; $errorCode2 = 0; $errorCode3 = 0;
+		$errorMessage = "Internal Server Error";
+		$errorDescription = "for some reason the server encountered an unexpected error";
+        break;
+    case "502": 
+        $errorCode = 503; $errorCode1 = 5; $errorCode2 = 0; $errorCode3 = 2;
+		$errorMessage = "Bad Gateway";
+		$errorDescription = "for some reason our backend servers were not working properly";
+        break;
+    case "503": 
+        $errorCode = 503; $errorCode1 = 5; $errorCode2 = 0; $errorCode3 = 3;
+		$errorMessage = "Service Unavailable";
+		$errorDescription = "for some reason our services had become unavailable, please try again later";
+        break;
+    case "504": 
+        $errorCode = 504; $errorCode1 = 5; $errorCode2 = 0; $errorCode3 = 4;
+		$errorMessage = "Gateway Timeout";
+		$errorDescription = "for some reason our backend servers were not responding in time";
+        break;
+    case "":
+    default: 
+        $errorCode = 000; $errorCode1 = 0; $errorCode2 = 0; $errorCode3 = 0;
+		$errorMessage = "Unknown Error";
+		$errorDescription = "for some reason you have encountered an unknown error, please contact the webmaster";
+        break;
+}
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="EN" lang="EN" dir="ltr">
+<head>
+<!--title>404 Page Not Found</title-->
+<?php echo "<title>$errorCode $errorMessage</title>" ?>
+<style>
+	html {
+	    overflow-y: scroll;
+	}
+	body {
+	    margin: 0;
+	    padding: 0;
+	    font-size: 13px;
+	    font-family: Georgia, "Times New Roman", Times, serif;
+	    color: #919191;
+	    background-color: #232323;
+	}
+	a {
+	    outline: none;
+	    text-decoration: none;
+	}
+	.fl_left {
+	    float: left;
+	}
+	.fl_right {
+	    float: right;
+	}
+	div.wrapper {
+	    display: block;
+	    width: 100%;
+	    margin: 0;
+	    padding: 0;
+	    text-align: left;
+	}
+	.row1,
+	.row1 a {
+	    color: #C0BAB6;
+	    background-color: #333333;
+	}
+	.row2 {
+	    color: #979797;
+	    background-color: #FFFFFF;
+	}
+	.row2 a {
+	    color: #FF9900;
+	    background-color: #FFFFFF;
+	}
+	.row3,
+	.row3 a {
+	    color: #919191;
+	    background-color: #232323;
+	}
+	div.wrapper h1,
+	div.wrapper h2,
+	div.wrapper h3,
+	div.wrapper h4,
+	div.wrapper h5,
+	div.wrapper h6 {
+	    margin: 0 0 15px 0;
+	    padding: 0;
+	    font-size: 20px;
+	    font-weight: normal;
+	    line-height: normal;
+	}
+	#footer {
+	    display: block;
+	    /*width: 960px;*/
+	    /*width: 480px;*/
+	    min-width: 360px;
+	    max-width: 960px;
+	    margin: 0 auto;
+	}
+	#container {
+	    padding: 30px 0;
+	}
+	#container a {
+	    background-color: transparent;
+	}
+	#footer {
+	    padding: 20px 0;
+	}
+	#footer p {
+	    margin: 0;
+	    padding: 0;
+	}
+	#fof {
+	    display: block;
+	    width: 100%;
+	    margin: 100px 0;
+	    line-height: 1.6em;
+	    text-align: center;
+	}
+	#fof .hgroup {
+	    text-transform: uppercase;
+	}
+	#fof .hgroup h1 {
+	    margin-bottom: 25px;
+	    font-size: 80px;
+	}
+	#fof .hgroup h1 span {
+	    display: inline-block;
+	    margin-left: 5px;
+	    padding: 2px;
+	    border: 1px solid #CCCCCC;
+	    overflow: hidden;
+	}
+	#fof .hgroup h1 span strong {
+	    display: inline-block;
+	    padding: 0 20px 20px;
+	    border: 1px solid #CCCCCC;
+	    font-weight: normal;
+	}
+	#fof .hgroup h2 {
+	    font-size: 60px;
+	}
+	#fof .hgroup h2 span {
+	    display: block;
+	    font-size: 30px;
+	}
+	#fof p {
+	    margin: 25px 0 0 0;
+	    padding: 0;
+	    font-size: 16px;
+	}
+	#fof p:first-child {
+	    margin-top: 0;
+	</style>
+</head>
+<body id="top">
+	<div class="wrapper row2">
+		<div id="container" class="clear">
+		<div id="fof" class="clear">
+			<div class="hgroup">
+			<h1><span><strong><?php echo $errorCode1; ?></strong></span><span><strong><?php echo $errorCode2; ?></strong></span><span><strong><?php echo $errorCode3; ?></strong></span></h1>
+			<h2>Error ! <span><?php echo $errorMessage; ?></span></h2>
+			</div>
+			<p><?php echo $errorDescription; ?></p>
+			<p><a href="javascript:history.go(-1)">&laquo; Go Back</a> / <a href="<?php echo $homeUrl; ?>"> Go Home &raquo;</a></p>
+		</div>
+		</div>
+	</div>
+	<div class="wrapper row3">
+		<div id="footer" class="clear">
+			<p class="fl_left">&copy; <?php echo $copyrightYear; ?> | <a href="<?php echo $siteUrl; ?>"><?php echo $siteTitle; ?></a></p>
+			<p class="fl_right">contact: <a href="mailto:<?php echo $webadminEmail; ?>"><?php echo $webadminName; ?></a></p>
+		</div>
+	</div>
+</body>
+</html>

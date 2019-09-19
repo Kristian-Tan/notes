@@ -1,0 +1,30 @@
+# example: assume this .htaccess file is on localhost/app/
+
+RewriteEngine On
+
+RewriteRule ^admin/manage/?$ url_register.php [L]
+# rewrite app/admin/manage/ to app/url_register.php
+
+RewriteRule ^admin/manage/ajax/?$ ajax.php [L]
+# rewrite app/admin/manage/ajax/ to app/ajax.php
+
+RewriteRule ^admin/ajax/?$ ajax.php [L]
+# rewrite app/admin/ajax to app/ajax.php
+
+RewriteRule ^url/([A-Za-z0-9-]+)/?$ url_open.php?url=$1 [L]
+# rewrite app/url/any_c00mon-t9 to app/url_open.php?url=any_c00mon-t9
+
+RewriteRule ^([A-Za-z0-9-]+)/?$ url_open.php?url=$1 [L]
+# rewrite app/any_c00mon-t9 to app/url_open.php?url=any_c00mon-t9
+
+RewriteRule ^new/([A-Za-z0-9-]+)/?$ url_new.php [L]
+# rewrite app/new/any_c00mon-t9 to app/url_new.php
+
+RewriteRule ^([A-Za-z0-9-\/_-]+)?$ index.php/$1 [L]
+# rewrite so that /anything becomes: index.php/anything
+# in index.php it can be found in: $_SERVER['PATH_INFO']
+# limitation: the url can only be made of A-Z, a-z, 0-9, -, /, _
+# example: app/aa/bb/cc-dd/ee_ff?a=10%20ea
+# routed to: app/index.php/aa/bb/cc-dd/ee_ff
+# in file index.php, $_SERVER['PATH_INFO'] = "/aa/bb/cc-dd/ee_ff"
+# in file index.php, $_GET['a'] = "a ea"

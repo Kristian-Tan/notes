@@ -1,0 +1,24 @@
+in document root, create/edit ".htaccess" file, add these line
+
+# HOW TO REDIRECT:
+# EXAMPLE: redirect kristian.zz.mu/follow -> http://twitter.com/Kristian_Tan
+# 
+# RewriteEngine on
+# RewriteCond %{HTTP_HOST} ^kristian.zz.mu$ [OR]  #insert hostname here (in this case: kristian.zz.mu)
+# RewriteCond %{HTTP_HOST} ^www.kristian.zz.mu$   #insert hostname here for www (in this case: www.kristian.zz.mu)
+# RewriteRule ^follow$ http://twitter.com/Kristian_Tan [R=301,L] # insert keyname (in this case: follow) and where to redirect (in this case:http://twitter.com/Kristian_Tan)
+
+# clean version
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} ^kristian.zz.mu$ [OR]
+RewriteCond %{HTTP_HOST} ^www.kristian.zz.mu$
+RewriteRule ^follow$ http://twitter.com/Kristian_Tan [R=301,L]
+
+
+
+# other example:
+# these settings will redirect http://localhost/cloud to http://cloud.kristian.zz.mu
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^localhost$
+RewriteRule ^cloud$ http://cloud.kristian.zz.mu [R=301,L]
