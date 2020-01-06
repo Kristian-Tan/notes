@@ -1,7 +1,7 @@
 ## source: https://dzone.com/articles/executable-package-pip-install
 steps:
 - register on pypi
-- install python package "setuptools", "wheel", "twine", "tqdm"
+- install python package ```setuptools```, ```wheel```, ```twine```, ```tqdm```
 - make directory with your package in it
 - create executable inside the package
 - create setup.py file, content:
@@ -38,10 +38,10 @@ index-servers=pypi
 repository = https://upload.pypi.org/legacy/
 username = myusername
 ```
-- upload with command: python3 -m twine upload dist/*
-- install on other machine: python3 -m pip install packagenamehere
+- upload with command: ```python3 -m twine upload dist/*```
+- install on other machine: ```python3 -m pip install packagenamehere```
 
 NOTE:
-- when creating new version/new release, edit setup.py and change upload command to upload only the new release (to prevent 'already exist' error)
-- when making a module (kind of library of classes or methods that can be called by other scripts, ex: like tkinter, PonyORM), use __init__.py to import your classes (that file will be executed when the module is imported)
-- when making an executable (ex: like PumpkinLB), use __main__.py to make the package executable (put main program there), it can then be called with python -m packagenamehere
+- when creating new version/new release, edit setup.py and change upload command (version number) to upload only the new release (to prevent 'already exist' error)
+- when making a module (kind of library of classes or methods that can be called by other scripts, ex: like tkinter, PonyORM), use ```__init__.py``` to import your classes (that file will be executed when the module is imported)
+- when making an executable (ex: like PumpkinLB), use ```__main__.py``` to make the package executable (put main program there), it can then be called with python -m packagenamehere
