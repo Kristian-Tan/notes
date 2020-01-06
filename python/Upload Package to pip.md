@@ -30,7 +30,7 @@ setuptools.setup(
 - note: file in scripts are copied to PATH in linux (to make it easier to execute your module), it's better to leave it empty
 - add LICENSE file, add README.md file
 - compile with command: python3 setup.py bdist_wheel
-- make file C:\Users\UserName\.pypirc (widows) or ~/.pypirc (linux), content:
+- make file C:/Users/UserName/.pypirc (widows) or ~/.pypirc (linux), content:
 ```
 [distutils]
 index-servers=pypi
