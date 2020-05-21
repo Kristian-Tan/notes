@@ -1,0 +1,60 @@
+pacman
+	sources: https://www.ostechnix.com/getting-started-pacman/ pacman man page
+	operations: -S (sync), -R (remove), -U (upgrade), -Q (query package database), -D (database operation), -F (query file database), -T (test dependency)
+	sync mode (-S) 
+		flags
+			-c: clear cache of old packages, -cc: clear all cache
+			-i: show package information, -ii: more verbose information
+			-s: search remote repository
+			-u: upgrade installed package, -uu: enable downgrade
+			-w: download only (don't install), save to pacman cache directory (default to: /var/cache/pacman/pkg/)
+			-y: download fresh package database, -yy: force refresh even when up to date
+			--ignore=: ignore upgrade to specified package
+		example of operations
+			pacman -Syy # refresh package list
+			pacman -S vlc # install package/group "vlc", target package can be more than one
+			pacman -Sw vlc # download package "vlc" but don't install, see [NOTE_1]
+			pacman -Syu # update all package in system (refresh package database, then update all installed package)
+			pacman -Syu --ignore=grep # update all package in system except "grep"
+			pacman -Syu --ignoregroup=mate # update all package in system except package group "mate"
+			pacman -Ss vlc # search package "vlc" from sync database (remote repository)
+			pacman -Sc # clear cache directory of old and uninstalled package, use -Scc to clear all
+	remove mode (-R)	
+		flags
+			-c: cascade (remove package and all packages that depends on it)
+			-d: skip dependency version check, -dd: skip all checks
+			-n: nosave (remove config files), pacman keeps config file as .pacsave file
+			-s: remove unnecessary dependencies, -ss: remove all explicitly installed dependencies
+			-u: remove unneeded dependencies (avoid breaking dependencies)
+		example of operations
+			pacman -R mate # remove "mate" package only
+			pacman -Rs mate # remove "mate" package and all of its dependencies
+			pacman -Rns mate # remove "mate" package and all of its dependencies, also delete config files
+			pacman -Rdd zeitgeist # remove "zeitgeist" package, but don't remove package that depends on it
+	upgrade mode (-U): mostly used to install package from file
+		example of operations
+			pacman -U /var/cache/pacman/pkg/vlc-2.2.2-3-x86_64.pkg.tar.xz # install package from cache [NOTE_1]
+	query package database (-Q): used to query local database (cache directory)
+		flags
+			-c: show changelog
+			-d: list package installed as dependency
+			-g: list package belongs to specific group (if group name specified) / list all package group (if no group name specified)
+			-i: show package information, -ii: more verbose information
+			-l: list file owned by package
+			-p (package): query package file instead of database
+			-s: seach local / installed package only
+			-t: list package not required by other package, -tt: ignore optional dependency
+			-u: list upgradeable package (out of date)
+			-n: native vs -m: foreign (foreign show packages not exist on remote repository / sync database, typically when installing manually)
+		example of operations
+			pacman -Q vlc # search package "vlc"
+			pacman -Qs vlc # search installed package "vlc"
+			pacman -Qi vlc # search package "vlc" and display detailed information
+			pacman -Ql vlc # search file owned by package "vlc"
+			pacman -Qdt # display list of unused packages
+			pacman -Qdtq # display list of unused packages (-q quiet flag means: without version, just package name) 
+			pacman -Rns $(pacman -Qdtq) # remove all unused packages
+	other pacscripts
+		pacsearch vlc # search and display detailed information about package "vlc"
+		pacgraph -c # display drive usage space by package
+		pacgraph # create graph (in png and svg) showing space usage and dependency of installed packages

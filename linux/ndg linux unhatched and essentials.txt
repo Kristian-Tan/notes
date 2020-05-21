@@ -1,0 +1,1038 @@
+https://www.netacad.com/courses/all-courses
+NOTE: NDG Linux virtual machine password: netlab123 
+
+# NDG Linux Unhatched
+
+###1
+why learn linux, where and who use linux, GUI and CLI
+
+###2
+ls
+command options and arguments
+
+###3
+pwd
+
+###4
+cd
+absoluve/relative path, path characters like ~, ., ..
+
+###5
+ls output (owner and group, size, type, permission)
+
+###6
+su
+sudo
+exit
+
+###7
+permission, user and group, rwx
+
+###8
+chmod
+executing file with ./
+
+###9
+chown
+
+###10
+mv
+
+###11
+cp (for copying file)
+dd (for copying entire partition, usage: dd if=/path/to/input/file of=/path/to/output/file bs=block_size_opt count=number_of_block_opt)
+
+###12
+rm
+
+###13
+cat
+head
+tail
+
+###14
+grep
+
+regular expression (regex)
+
+.		Any one single character
+[ ]		Any one specified character
+[^ ]	Not the one specified character
+*		Zero or more of the previous character
+^		If first character in the pattern, then pattern must be at beginning of the line to match, otherwise just a literal ^
+$		If last character in the pattern, then pattern must be at the end of the line to match, otherwise just a literal $
+
++		One or more of the previous pattern
+?		The preceding pattern is optional
+{ }		Specify minimum, maximum or exact matches of the previous pattern
+|		Alternation - a logical "or"
+( )		Used to create groups
+
+###15
+shutdown
+date
+
+###16
+ifconfig
+ping
+
+###17
+ps
+
+###18
+package management
+for example, ubuntu is debian based (debian used dpkg for package management), but ubuntu use apt or apt-get as front-end program to interact with dpkg
+
+###19
+passwd
+
+###20
+redirect output to file with ">" (replace file content), or ">>" (append file content)
+
+Standard Input (STDIN)
+sysadmin@localhost:~$ ls <HERE>~/Documents</HERE>
+
+Standard Output (STDOUT)
+sysadmin@localhost:~$ ls
+<HERE>Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos</HERE>
+
+Standard Error (STDERR)
+sysadmin@localhost:~$ ls fakefile                                               
+<HERE>ls: cannot access fakefile: No such file or directory</HERE>
+
+###21
+text editor: vi, vim, nano
+
+###22
+
+
+# NDG Linux Essentials
+
+###1 - Introduction
+linux is a kernel, GNU is a free software collection, GNU/Linux means linux kernel bundled with GNU software (often distributed as a distribution)
+linux is open source, linux is written in C in order to be more platform independent
+linux encourage CLI usage
+
+###2 - Operating System
+decision point when choosing OS: role/function, life cycle, stability, compatibility (backward), cost, interface
+major OS: windows, mac, linux
+major distribution: red hat (commercial with support), SUSE/openSUSE, debian/ubuntu/mint, android, raspbian, LFS
+
+###3 - Working in Linux
+kernel of OS manages applications (allocate memory, resource, start and kill), application just call kernel's API
+process is a task loaded and tracked by kernel
+server applications:
+	- webserver (HTTP)
+		- apache
+		- nginx
+		- wordpress (cms)
+	- cloud server
+		- ownCloud
+		- nextcloud
+	- database
+		- MySQL
+		- MariaDB
+		- Firebird
+		- PostgreSQL
+	- mail server
+		- mail transfer agent (MTA)
+			- sendmail
+			- postfix
+		- mail delivery agent (MDA)
+		- POP/IMAP server
+			- dovecot
+			- cyrus IMAP
+	- file sharing
+		- samba (windows)
+		- netatalk (apple)
+		- network file system (NFS)
+	- DNS
+	- LDAP
+	- DHCP
+desktop applications:
+	- mail client
+		- thunderbird
+		- evolution
+		- kmail
+	- creative
+		- GIMP
+		- blender
+		- audacity
+	- office
+		- libre office
+		- open office
+	- browser
+console / shell scripting applications
+	- text editor
+	- package management
+	- programming language
+		- java
+		- js
+		- c/c++
+		- perl
+		- php
+		- ruby
+		- python
+security:
+	- password manager
+	- firewall
+
+###4 - Open Source Software and Licensing
+open source advantages: no malware, free, standardized, many technology professional understands them
+GPLv2: free and open source software (FOSS)
+Free Software Foundation (FSF) creates GPL license (strong copyleft)
+Open Source Initiative (OSI) creates "acknowledgement" license: use, modify and may be used in proprietary as long as giving acknowledgement to creator
+Creative Commons (CC): FOSS for non-software work (art, literature), can have these flags
+	- Attribution (BY): creator must be given credit
+	- ShareAlike (SA) – copy, distribute, perform, and modify as long as under the same terms
+	- NonCommercial (NC)
+	- NoDerivatives (ND): must obtain the creator’s permission to modify
+if no flags are applied, they become CC0 (public domain)
+Business model: sell support/warranty, sell hardware
+
+###5 - Command Line Skill
+common shell: bash
+USERNAME@SYSTEMNAME:CURRENTDIR$
+command options and arguments
+history (up button, "history" command)
+variable
+	var1='value' # set variable
+	echo $var1 # show variable content
+	export var1 # change local variable to environment variable
+	env # list environment variable
+	unset var1 # remove variable
+command type ("type" command)
+	internal command: built in into bash shell (ex: cd, echo, pwd)
+	external command: stored in file inside a directory that exist in PATH environment variable (ex: python, apt in /usr/bin/apt), use "which" or "type -a`" command to show source file location
+	alias: map a command to an alias, command to show aliases: "alias", to set alias: "alias myalias=mycommand"
+quotation
+	double quote ("): make all glob (wildcard) into literal, still allow command, variable substitution
+	single quote ('): make all glob, command, variable substitution into literal
+	backslash (\): convert special character into literal (escaped)
+	backquote (`): command substitution: text inside backquote will be executed and output shown inline, ex: echo "Today is `date`"
+		can also use $(command), ex: "Today is $(date)"
+control statement
+	semicolon (;): run multiple command, continue running regardless of result of previous command
+	double ampersand (&&): run multiple command, next command won't run if previous command fail
+	double pipe (||): run multiple command, next command won't run if previous command success (a.k.a.: either run this first command or the second one)
+
+###6 - Getting Help
+command: "man COMMANDNAMEHERE"
+section:
+	- name (and brief description)
+	- synopsis
+		[OPTIONS] => the enclosing [] means that it's optional
+		... => the ... means more than 1 options may be used
+		[-A number] => means that the -A option receive a value (ex: cal -A 10)
+			other way to set values is without space (ex: cal -A10)
+			other way to set values is with equal sign (ex: cal -A=10)
+		[[month] year] => means that "year" can be specified by itself, but "month" must be specified with "year"
+		[-u|--utc|--universal] => means that option "-u", "--utc", "--universal" does same thing OR only one of those options may be used
+	- description (text description)
+	- options
+	- files
+	- author
+	- reporting bugs
+	- copyright
+	- see also
+types of man file:
+	1 General Commands (Executable programs or shell commands)
+	2 System Calls (functions provided by the kernel)
+	3 Library Calls (functions within program libraries)
+	4 Special Files (usually found in /dev)
+	5 File Formats and Conventions (ex: /etc/passwd)
+	6 Games
+	7 Miscellaneous (including macro packages and conventions)
+	8 System Administration Commands (usually only for root)
+	9 Kernel Routines
+ex: "man apt" result first line: "APT(8)                                APT" => means that page is on type 8 (8 System Administration Commands)
+some command may have multiple man page (ex: passwd for "passwd" command AND for "/etc/passwd" file)
+	man -f passwd # list all possible man file for "passwd"
+	man 5 passwd # show man page for "passwd" with type 5 (5 File Formats and Conventions)
+search entire manual for a keyword: man -k KEYWORDHERE
+finding command and docs:
+	whatis COMMANDNAMEHERE # equals to man -f COMMANDNAMEHERE
+	whereis COMMANDNAMEHERE # show where the binary, source code, and manual page for that command is stored
+	apropos COMMANDNAMEHERE # equals to man -k COMMANDNAMEHERE
+finding file: "locate KEYWORDHERE" 
+	this command search in database of all file and directory (like windows indexing)
+	flag "-c": show only the number of file that match
+	flag "-b": only full filename
+	to update the index database: "updatedb"
+for learning: use "info COMMANDNAMEHERE" instead of man
+other source of help: "--help" option, README file included in binary, /usr/share/doc
+
+###7 - Navigating the Filesystem
+/ is root directory
+home directory (~)
+cd, pwd
+ls
+	flag "-a": list hidden files
+	flag "-h": show size in human readable format (used with -l flag)
+	flag "-d": show current directory only (used with -l flag)
+	flag "-R": recursive (show all subdirectory)
+	flag "--full-time": long date/time representation in timestamp
+	flag "-S": sort by file size (large file first)
+	flag "-t": sort by timestamp (most recent first)
+	flag "-r": reverse sort
+	flag "-l": show long display / metadata
+	ex: 
+		-rw-r----- 1 syslog adm     371 Dec 15 16:38 auth.log
+		tppppppppp h uuuuuu ggg     sss dddddddddddd nnnnnnnn
+		t = type 
+			d=>directory
+			-=>file
+			l=>symlink (symbolic link)
+			s=>socket
+			p=>pipe (FIFO)
+			b=>block (hardware file which read/write data in blocks like hdd, cdrom, ex: /dev/sda1)
+			c=>charfile (hardware file which reads/write data in character by character fashion like keyboard, mouse, serial printer, ex: /dev/null, /dev/random, /dev/tty)
+		p = permission, format: uuugggooo
+			u = user
+			g = group
+			o = other
+		h = number of hard link
+		u = user (owner)
+		g = group (owner)
+		s = file size in byte
+		d = date/time stamp
+		n = name
+
+###8 - Managing Files and Directories
+files and directories are case sensitive
+searching for files and directories can be done with glob characters (wildcard)
+glob characters
+	asterisk (*): multiple character (or zero character), ex: "a*" matches "a", "ap", "app", "appp"
+	question mark (?): single character, ex: "a?" matches "ap", "at", "ag"
+	square bracket ([) and (]): match any single character inside square bracket, ex: "[ab]*" matches "appp", "bpp", "bp", ex: "[a-d]" matches "a", "b", "c", "d"
+	exclamation mark (!): not any character inside square bracket, ex: "[!abc]" matches "e", "f", "g"
+note that glob characters are evaluated by the shell before executing the command: purpose of glob characters are to provide list of filename to command
+	assume that directory ~ (user home) contains: ~/documents, ~/downloads, ~/pictures, ~/videos, ~/note.txt
+	assume that user run:
+	$ echo do*
+	output: /home/user/documents	/home/user/downloads
+	running that command equals to running:
+	$ echo /home/user/documents
+	$ echo /home/user/downloads
+	because the shell translated "do*" into "/home/user/documents /home/user/downloads" before executing them
+copying file: "cp source destination"
+	if destination is directory, new file keep original file name
+	flag "-v": verbose output (will not show any message if success otherwise)
+	flag "-r": copy whole directory recursively (will not work on copying directory otherwise)
+	flag "-i": interactively ask if user want to overwrite existing file with same name (will default to overwrite otherwise)
+	flag "-n": never overwrite file (will default to overwrite otherwise)
+	flag "-p": preserve attributes (owner, group, permission)
+moving file: "mv source destination"
+	this command also used to rename file
+	have same flag as "cp": "-v", "-i", "-n"
+	mv don't need to use "-r" flag to move directory
+delete file: "rm filename"
+	have same flag as "cp": "-v", "-r", "-i", "-n"
+	may delete multiple file "rm file1 file2"
+create empty file: "touch filename"
+create empty directory: "mkdir directoryname"
+
+###9 - Archiving and Compression
+archiving: multiple files to one file
+compression: reduce file size
+type of compression
+	lossless: no information removed from file, compression and decompression leaves identical file to the original
+	lossy: information might be removed, ex: an image with two subtly different shades of green might be made smaller by treating those two shades as the same
+		mostly used for media (picture, video, music), ex: jpg, mp4, mp3
+archiving tool: tar (tape archive), this tool will not compress the file (only merge multiple file)
+	extension: .tar
+	operations: create, extract, list (show content without extracting)
+	create (make a new archive), "-c" or "--create" flag
+		$ tar -c -f FILENAMEHERE.tar FILE1 FILE2 FILE3 ...
+		compression flags:
+			flag "-z" or "--gzip": Lempel-Ziv algorithm (gzip)
+				fastest compression and decompression, low memory usage, low compression ratio
+				extension: .gz
+			flag "-j" or "--bzip2": Burrows-Wheeler algorithm (bzip2)
+				slower than gzip, better compression ratio than gzip, slow decompression
+				extension: .bz, .bz2
+			flag "-J" or "--xz": Lempel-Ziv-Markov algorithm (xz)
+				slow compression, high compression ratio, high memory usage, fast decompression
+				extension: .xz
+			flag "-a" or "--auto-compress": use filename's extension to determine compression/decompression algorithm
+	list (show content without extracting), "-t" or "--list" flag
+		$ tar -t -f FILENAMEHERE.tar
+	extract, "-x" or "--extract" flag
+		$ tar -x -f FILENAMEHERE.tar
+		extract target is current directory
+		if archive is compressed, compression flags are needed
+	flag "-f" can be substituted with "--file"
+note: when compressing/decompressing with gzip, bzip2, xz, the input file will be replaced with the compressed/decompressed (output) file
+windows archiving algorithm: zip - unzip
+	create: 
+		$ zip FILENAMEHERE.zip FILE1 FILE2 FILE3
+		$ zip -r FILENAMEHERE.zip DIRECTORYNAMEHERE
+	list (show content without extracting)
+		$ unzip -l FILENAMEHERE.zip
+	extract
+		$ unzip FILENAMEHERE.zip
+		extracting specific files by adding the file names after archive file name (may use glob characters)
+
+###10 - Working With Text
+viewing text file content
+	cat (concatenate): show all content in terminal
+	more: use pagination, always available on all distribution
+		last screen: b (back)
+		next screen: space
+	less: advanced/better pagination than "more", not always available on all distribution
+		display control help: shift+H
+		search: type "/KEYWORDHERE", type "n" to next match, type "N" to previous match
+		search backward: use ? instead of /
+	head/tail: display first/last few lines
+		flag "-n": set number of line to be displayed, ex: "tail -n 10"
+		flag "-f": follow file (display as file grows/appended), used to monitor log file
+	tr: translate (remap) characters, ex: "tr 'A-Z' 'a-z' < myfile.txt" makes uppercase letters to lowercase
+	wc: word count (show number of newline, word, byte count of files in order)
+
+I/O redirection
+	streams
+		STDIN (standard input): entered normally by user from keyboard, if needed by program but not provided by user then shell wait for user input (channel 0)
+		STDOUT (standard output): normal output stream for commands, defaults to terminal window (channel 1)
+		STDERR (standar error): error output stram, default to terminal window (channel 2)
+	redirection symbol
+		pipe (|): send output of one command to other command
+			ex: "ls | head -n 5" means to send STDOUT of "ls" command to STDIN of "head -n 5"
+		greater than (>): redirect output to file (replace)
+			ex: "ls > lsoutput.txt" means to save STDOUT of command to a file (replace file content)
+			ex: "ls 1>lsoutput.txt 2>lserror.txt" means to save STDOUT to file, and save STDERR to other file
+		double greater than (>>): redirect output to file (append), ex: "ls >> lsoutput.txt" means to append STDOUT of command to a file
+		and (&): redirect output to stream
+			ex: "ls 1>lsoutput.txt 2>&1" means to redirect channel 1 (STDOUT) to file, then redirect channel 2 (STDERR) to same place as channel 1 (STDOUT)
+			ex: "ls &>lsoutput.txt" means to redirect both channel (STDOUT and STDERR) to file
+		lesser than (<): read STDIN from file, ex: "mysql -u root -p dbname < dump.sql"
+
+viewing plaintext delimited database (ex: csv)
+	sort: sort each line of a file in ascending as order in ascii table, ex: "sort myfile.txt"
+		flag "-r": reverse sort (descending order)
+		flag "-t": specify field delimiter (ex: comma used for csv)
+		flag "-k": specify field number to be sorted
+		flag "-n": sort numerically (ex: with numeric sort: 9 < 40 < 222 < 3000, with alphabetic sort: 222 < 3000 < 40 < 9)
+		ex: 
+			year,distribution,author # this line is not in file
+			1991,Linux,Torvalds
+			1987,Minix,Tanenbaum
+			1970,Unix,Richie
+			1970,Unix,Thompson
+		ex:
+			SQL: SELECT ... ORDER BY year ASC
+			BASH: sort -t, -k1 tbl.csv # "-k1" set "year" field as the sort field, "-t," set comma as delimiter
+			1970,Unix,Richie
+			1970,Unix,Thompson
+			1987,Minix,Tanenbaum
+			1991,Linux,Torvalds
+		ex:
+			SQL: SELECT ... ORDER BY year DESC
+			BASH: sort -t, -k1r tbl.csv # "-k1r" set "year" field as the sort field in reverse order
+			1991,Linux,Torvalds
+			1987,Minix,Tanenbaum
+			1970,Unix,Thompson
+			1970,Unix,Richie
+		ex:
+			SQL: SELECT ... ORDER BY distribution DESC, author ASC, year ASC
+			BASH: sort -t, -k2r -k3 -k1n tbl.csv
+			1970,Unix,Thompson
+			1970,Unix,Richie
+			1987,Minix,Tanenbaum
+			1991,Linux,Torvalds
+	cut: display only selected field / column
+		flag "-d": specify field delimiter (ex: comma used for csv)
+		flag "-f": specify field number to be selected, format: -f1,3,5-7 to select first, third, fifth, sixth, seventh field
+		flag "-c": specify character position to be selected (can't be used with "-f"), format: see above
+		ex:
+			SQL: SELECT author FROM ...
+			BASH: cut -d, -f3
+			Richie
+			Tanenbaum
+			Thompson
+			Torvalds
+		ex:
+			SQL: SELECT year, author FROM ...
+			BASH: cut -d, -f1,3
+			1970,Richie
+			1987,Tanenbaum
+			1970,Thompson
+			1991,Torvalds
+	grep: match regular expression	
+		flag "-n": display line number
+		flag "-v": invert match (NOT CONTAINS)
+		flag "-w": match whole word
+		flag "-c": count number of matches
+
+regular expression
+	basic regular expression (mostly used with grep)
+		.		Any one single character
+		[ ]		Any one specified character
+		[^ ]	Not the one specified character
+		*		Zero or more of the previous character
+		^		If first character in the pattern, then pattern must be at beginning of the line to match, otherwise just a literal ^
+		$		If last character in the pattern, then pattern must be at the end of the line to match, otherwise just a literal $
+	extended regular expression (mostly used with egrep or grep -E)
+		?	Zero or one of the previous character (optional quantifier character), ex: 'colou?r' matches 'color' and colour'
+		+	One or more of the previous character
+		|	Logical "or" operator, ex: 'gr(a|e)y' matches: 'gray' and 'grey'
+		{ }	Specified number of previous character or pattern, ex: 'a{3}b' matches 'aaab', '[0-9]{3}' matches any 3 digit number
+	literals (mostly used with fgrep or grep -F)
+
+###11 - Basic Scripting
+executing script: "./script.sh" (require read and execute permission) or "sh script.sh" (require read permission)
+shebang: comment on first line indicating what program should be used to open the file, #=hash !=bang, ex: "#!/bin/sh"
+nano commands:
+	^G: display help
+	^X: exit
+	^K: cut (kat) cut current line to cutbuffer
+	^U: paste (uncut) paste cutbuffer to current line
+	^O: save (output to file)
+	^_: go to line number
+	^W: find (where) => ^R: find and replace
+	^Y/^V: page up/down
+vi commands:
+	i: insert text (switch to insert mode)
+	esc: exit insert text mode (switch to command mode)
+	w: write to file (save)
+	q: quit
+	k/h/j/l: move up/left/down/right OR h/j/k/l: move left/down/up/right
+	w/b: move to next/previous word
+	e: move to end of word
+	$: move to end of line
+	0: move to start of line
+	{N}G: move to {N}th line
+	u: undo
+	dd: delete line
+	dw: delete word
+	x: delete 1 character
+	shift+X: backspace (delete 1 character on left of cursor)
+	shift+D: delete from current position until end of line
+	p: paste deleted word
+	y: copy (yank)
+variable: VARIABLE_NAME="value here"
+	naming conventions: all caps with underscore
+	use $VARIABLE_NAME to access variable content
+	read user input to variable: "read VARIABLE_NAME"
+	script arguments: $0 contains script name, $1 $2 $3 etc contains arguments
+exit code:
+	exit code saved to variable $?
+	exit code 0 means success
+	exit code 1-255 means failed (common error use 1)
+	command to make script output an exit code: "exit 1", "exit 0", etc
+if / conditional:
+	if command_here; then
+		# command if true (will be run if command_here returns 0 / success)
+	elif command_here; then
+		# other command
+	else
+		# command if false
+	fi
+	# NOTE: fi = end if (word "if" written backward)
+	# NOTE: elif = else if
+	# NOTE: elif and else is optional
+testing / evaluating conditions: 
+	use command "test" or enclose condition with " [ " and " ] " (enclosed condition actually passed to "test" command as option and argument)
+	check for file
+		test –f /file		0 if the file exists
+		test ! –f /file		0 if the file doesn’t exist
+		test –d /dir		0 if the directory exists
+	check for permission
+		test –x /bin/ls		test if the user can execute ls
+		test –x `which ls`	test if the user can execute ls
+	check for comparison
+		test 1 –eq 1		0 if numeric comparison succeeds (==)
+		test ! 1 –eq 1		0 if numeric comparison fails (NOT / != / <>)
+		test 1 –ne 1		0 if numeric inequality
+		test "a" = "a"		0 if the string comparison succeeds
+		test "a" != "a"		0 if the strings are different
+	logical operator
+		test 1 –eq 1 –o 2 –eq 2		-o is OR: either can be the same
+		test 1 –eq 1 –a 2 –eq 2		-a is AND: both must be the same
+switch case:
+	case "$1" in
+	mulai | start )
+		echo "starting application"
+		;;
+	exit )
+		echo "exiting application"
+		;;
+	* )
+		echo "unknown command"
+		;;
+	esac
+	# NOTE: esac = end case (word "case" written backward)
+	# NOTE: ;; = break (go to end case if encountered instead of continue checking)
+foreach loop
+	ITEMS="item1 item2 item3 item4"
+	for ITEM in $ITEMS; do
+		echo $ITEM
+	done
+while loop
+	I=0
+	while [ $I -lt 10 ]; do
+		echo $I
+		I=$(( $I+1 )) 
+	done
+	# NOTE: $(( arithmetic )) command evaluate arithmetic expression
+for loop
+	for I in `seq 0 9`; do
+		echo $I
+	done
+	# NOTE: "seq" command is inclusive on both start and end
+
+###12 - Understanding Computer Hardware
+motherboard: some component directly connected to motherboard (CPU, RAM), some component via system bus
+processor: most common architecture: x86 (32bit) and x86_64 (64bit)
+	to show architecture: "arch"
+	to show CPU / processor details: "lscpu" or read file "/proc/cpuinfo"
+RAM: program and data stored on RAM when invoked, then processor read instruction from RAM, 
+	utilize swap to virtualize memory
+	to show memory usage: "free", "free -m" (in megabyte), "free -g" (in gigabyte), "top", "htop"
+		in "free" command, "-/+ buffers/cache": memory after clearing all buffers/cache
+	to show memory info: read file "/proc/meminfo" "/proc/swaps"
+bus:
+	Peripheral Component Interconnect (PCI): use "lspci" to show hardware connected to PCI, use "lspci -k" to show kernel drivers used
+	Universal Serial Bus (USB): use "lsusb" to show hardware connected to USB
+	hot-plug: means that hardware can be connected/disconnected while system run
+	use "lsmod" to show modules (drivers) used by system
+hard drive:
+	partition: logical division of hard drive, partitioning methods:
+		MBR (master boot record): older, use commands: "fdisk", "cfdisk", "sfdisk"
+		GPT (GUID partitioning table): newer (2000), use commands: "gdisk", "cgdisk", "sgdisk"
+		tool that support both MBR and GPT: "parted" (CLI), "gparted" (GUI of parted)
+		each partition stored in /dev as "block file" with this naming conventions:
+			/dev/hdXX = IDE / PATA hard drive, /dev/sdXX = SATA / SCSI hard drive
+			/dev/sdaX = first hard drive (a), next will be (b), (c), etc
+			/dev/sda1 = first partition in first hard drive
+			other convention like grub use (hd0,1) to name sda1 (first hard drive first partition)
+	mounting partition: make a block's content accessible
+		mount /dev/sda2 ~/myotherdrive
+		umount /dev/sda2
+display device
+	analog 15-pin Video Graphics Array (VGA)
+	29-pin Digital Visual Interface (DVI)
+	High-Definition Multimedia Interface (HDMI)
+
+###13 - Where Data is Stored
+pseudo filesystem: file that appear on disk but actually only exist in memory, ex: /proc /dev /sys
+/proc: contains information about running process, hardware, kernel configuration, also contains subdirectory named after PID (process id), ex: 1
+	/proc/cmdline: command line parameters, special instructions, etc., passed to kernel on system start
+process hierarchy:
+	when kernel finish boot procedure, it starts the "init process" and assigns PID=1
+	this process (PID=1) starts other system processes
+	PID numbers are assigned sequentially, max number stored in "/proc/sys/kernel/pid_max", when max number reached, PID number restarts from lowest
+	process snapshot: "ps"
+		show process hierarchy: "pstree" or "ps --forest"
+		filter processes by user: "ps -u USERNAMEHERE"
+		show all process: "ps aux"
+	process realtime monitoring: "top"
+		process shown with highest CPU usage first
+		load average shown for last 1 minute, last 5 minutes, last 15 minutes
+		kill process: press "K"
+		readjust priority: press "R" (lower number = higher priority), range: -20 until 19 (need root permission to set higher priority or set priority of other user's process)
+foreground and background process:
+	to start background process: suffix the command with "&", ex: "ping localhost &"
+	to show all background process: "jobs"
+	to bring background process to foreground: "fg %ID" see "jobs" output to determine ID
+	to resume background process: "bg %ID"
+	kill background process with: "kill %ID"
+	send signal to process with: "pkill -SIGNALID PROCESSCOMMAND"
+IPC signals (inter-process communication):
+	2	SIGINT: interrupt signal (ctrl+c), can be caught or ignored by process (allowing graceful shutdown), "user-initiated happy termination"
+	3	SIGQUIT: quit and do core dump (ctrl+\), can be caught or ignored by process (allowing graceful shutdown), "user-initiated unhappy termination"
+	9	SIGKILL: terminate signal, cannot be caught (force kill)
+	XX	SIGSTOP / SIGCONT: stop (ctrl+z) / continue (pause / resume) execution
+	15	SIGTERM: termination signal, can be caught to allow graceful shutdown, but with intent to kill process, graceful or not
+logging: stored on /var/log directory
+	log files example:
+		boot.log: log of services started during system startup
+		cron: log of crond daemon
+		dmesg: log by kernel during system boot up
+		maillog: log by mail daemon for sent or received mail
+		messages: log from kernel and other processes that don't belong elsewhere (sometimes named syslog)
+		secure: log from processes that required authorization or authentication (such as login process)
+		journal: log from default configuration of systemd-journald.service
+	log file rotation: older log files renamed and replaced with newer log files
+filesystem hierarchy standard: http://www.pathname.com/fhs/
+	shareable vs not shareable: whether directory can be shared on network or used by multiple machines
+	static vs variable files: whether file content can change or not
+	common top-level directory:
+		/bin	Essential binaries like ls, cp, and rm commands, part of root filesystem
+		/boot	Files necessary to boot the system, ex: Linux kernel, associated configuration
+		/dev	Files that represent hardware devices and other special files, ex: /dev/null, /dev/zero 
+		/etc	Essential host configurations files, ex: /etc/hosts, /etc/passwd
+		/home	User home directories
+		/lib	Essential libraries to support executable files in /bin and /sbin
+		/lib64	Essential libraries for specific architecture. ex: /lib64 directory for 64-bit AMD/Intel x86 compatible processors
+		/media	Mount point for removable media (mounted automatically)
+		/mnt	Mount point for temporarily mounting filesystems (mounted manually)
+		/opt	Optional third-party software installation location
+		/proc	Virtual filesystem for kernel to report process information
+		/root	Home directory of root user
+		/sbin	Essential system binaries primarily used by root user
+		/sys	Virtual filesystem for information about hardware devices connected to the system
+		/srv	Location where site-specific services may be hosted
+		/tmp	Directory where all users are allowed to create temporary files and that is supposed to be cleared at boot time (but often is not)
+		/usr	Second hierarchy, Non-essential files for multi-user use (intended to store software for multiple users, sometimes shared over network and mounted as read-only)
+		/usr/local	Third hierarchy, Files for software not originating from distribution
+		/var	Fourth hierarchy, Files that change over time
+		/var/cache	Files used for caching application data
+		/var/log	Most log files
+		/var/lock	Lock files for shared resources
+		/var/spool	Spool files for printing and mail
+		/var/tmp	Temporary files to be preserved between reboots
+	binary directories:
+		/bin
+		/usr/bin
+		/usr/local/bin
+		/usr/local/application/bin
+		/opt/application/bin
+	application data directories (linux counterpart of "program files" directory):
+		/usr/share
+		/usr/lib
+		/opt/application
+		/var/lib
+	library directories: contain code that is shared between multiple programs, often have .so extension (shared object)
+		/lib OR /lib64
+		/usr/lib OR /usr/lib64
+		/usr/local/lib
+		/opt/application/lib
+	variable data directoy: contain data that changes frequently (/var)
+
+###14 - Network Configuration
+basic terms:
+	- Host: computer, any device that communicates via a network with another device (desktop/laptop/cell phones/digital music players/televisions)
+	- Network: collection of multiple hosts that can communicate with each other
+	- Internet: a network that consists of publicly accessible network that connects hosts throughout the world
+	- Wi-Fi: wireless network
+	- Server: host that provides service to another host or client (ex: web server, email server)
+	- Service: feature provided by host (ex: host provides web pages to another host)
+	- Client: host that is accessing a server
+	- Router/gateway: machine that connects hosts from one network to another network. (ex: the computers within the company can all communicate via the local network created by the administrators; to access the Internet, the computers have to communicate with router that forward network communications to the Internet)
+more terms:
+	- Protocol: set of rules
+	- Packet: used to send network communication between hosts, broken down into smaller chunks (packets)
+	- IP Address: unique number assigned to host on network to address communication
+	- Mask (netmask/subnet mask/mask):  number system to define which IP addresses are considered to be within single network
+	- Hostname: name for each host on network, translated into IP addresses before packet is sent 
+	- URL (Uniform Resource Locator) used to locate resource (ex: web page)
+	- DHCP (Dynamic Host Configuration Protocol): defines how network information (address) assigned to client hosts
+	- DNS (Domain Name System): provides service of translating domain names into IP addresses
+	- TCP/IP (Transmission Control Protocol/Internet Protocol): collection of protocols that define how network communication should take place between hosts
+IP address:
+	- IPv4: 32bit address, ex: 192.168.10.120
+	- IPv6: 128bit address, ex: 2001:0db8:85a3:0042:1000:8a2e:0370:7334
+	- why IPv4 still used: 
+		NAT (Net Address Translation) provide more hosts access to the Internet; group of hosts placed into private network with no direct access to the Internet; a special router provides Internet access, and only the router needs an IP address
+		Porting/compatibility
+network configuration: different on distribution
+	/etc/network/interfaces (for debian based distribution)
+	/etc/NetworkManager/system-connections/ (for NetworkManager managed system)
+	/etc/sysconfig/network-scripts/ifcfg-eth0 (for redhat based distribution)
+		DEVICE="eth0"
+		BOOTPROTO=none # can be set to dhcp
+		NM_CONTROLLED="yes"
+		ONBOOT=yes
+		TYPE="Ethernet"
+		UUID="98cf38bf-d91c-49b3-bb1b-f48ae7f2d3b5"
+		DEFROUTE=yes
+		IPV4 _FAILURE_FATAL=yes
+		IPV6INOT=no
+		NAME="System eth0"
+		IPADDR=192.168.1.1 # not needed if using dhcp
+		PREFIX=24 # not needed if using dhcp
+		GATEWAY=192.168.1.1 # not needed if using dhcp
+		DNS1=192.168.1.2 # not needed if using dhcp
+		HWADDR=00:50:56:90:18:18
+		LAST_CONNECT=1376319928
+		IPV6INIT=yes # needed if using IPv6
+		IPV6ADDR=<IPv6 IP Address> # needed if using IPv6
+		IPV6_DEFAULTGW=<IPv6 IP Gateway Address> # needed if using IPv6
+		DHCPV6C=yes # needed if using IPv6 dhcp
+		# append to file: /etc/sysconfig/network line: "NETWORKING_IPV6=yes"
+	DNS configuration: 
+		file /etc/resolv.conf => store IP address of name servers (syntax: "nameserver 192.168.1.1")
+		file /etc/hosts => map hostname to IP address (syntax: "127.0.0.1 localhost")
+		file /etc/nsswitch.conf => define order of name resolution (syntax: "hosts: files dns" means that /etc/hosts searched first, then dns server)
+tools:
+	net-tools (deprecated)
+		ifconfig (replaced by "ip addr")
+		route (show routing table, replaced by "ip route")
+		ping
+		netstat (replaced by "ss")
+			netstat -i: statistic of traffic for each interface
+			netstat -r: routing
+			netstat -tln: open ports (-t: tcp, -l: listening, -n: number instead of name)
+	iproute (new)
+		ip
+			syntax: ip [options] object [command...]
+			objects: link, address, route, rule, maddrress
+			ip link set eth0 up # enable interface, change "up" with "down" to disable interface
+			ip addr add 192.168.1.105/24 dev eth0 # set IP address to interface, change "add" with "del" to unset IP address
+			ip route add 10.10.20.0/24 via 192.168.1.1 dev eth0 # set static routing, change "add" with "del" to delete static routing table entry
+		ss (socket statistic)
+			output columns: Netid=transport protocol, State=established/closed, Recv-Q/Send-Q=receive/send queue (data stream), local/remote address:port
+			ss -s: summary/statistic (aggregated)
+			ss -l: listening sockets only
+	querying dns
+		dig hostnamehere
+		nslookup hostnamehere
+		host hostnamehere
+			host -t DNSRECORDTYPE hostnamehere (ex: host -t CNAME google.com)
+			host -a hostnamehere (show all)
+
+###15 - System and User Security
+1 file have 1 owner and 1 group
+1 user have 1 or multiple group
+root/administrative user may be disabled or not used for daily task to prevent dangerous access
+switch user: "su"
+privileged command: "sudo", "gksudo"
+user accounts defined in /etc/passwd
+	data stored in table with colon (:) separated format, ex: 
+		lily:x:1000:1000:lily:/home/lily/:/bin/bash
+		sysadmin:x:1001:1001:System Administrator,,,,:/home/sysadmin:/bin/bash
+	columns: "name:passwordplaceholder:userid:primarygroup:comment:homedirectory:shell"
+		name: username used to login
+		passwordplaceholder: password for user stored in specified location (x means /etc/shadow)
+		userid: UID used to identify user (like database primary key), file permission store UID instead of username
+		primarygroup: user belongs to specified group with that group ID
+		comment: any information
+		homedirectory: location for user's home directory (usually /home/username or /root for root user)
+		shell: location of user's login shell
+user passwords defined in /etc/shadow
+	data stored in table with colon (:) separated format, ex: 
+		lily:$2356727.2456...:18399:0:99999:7:::
+		sysadmin:$6$c75ekQWF$.GpiZ..c7v0.n0:16874:5:30:7:60:15050:
+‌⁠​​⁠​ 	columns: "name:password:lastchange:min:max:warn:inactive:expire:reserved"
+		name: username used to login
+		password: hashed password (! means password have not been set)
+		lastchange: epoch (days since 1 Jan 1970) since last time password changed
+		min: user cannot change password more frequently than this number of day (minimum number of days to pass until user can change password again)
+		max: user must change password before this number of days passed (maximum number of days the password is valid)
+		warn: number of days before password expiration that system show warning to user
+		inactive: number of days before user's account locked out if password not changed (exceed max)
+		expire: epoch (days since 1 Jan 1970) when user's account locked out (usually for temporary employee)
+		reserved: unused
+system accounts: not meant for user to login
+	root: have UID=0
+	other account for services running (ex: cups, git, ntp, http): have UID 1-499
+	have * (asterisk) as password in /etc/shadow (ex: "sshd:*:16874:0:99999:7:::")
+	have nologin as shell in /etc/passwd (ex: "sshd:x:103:65534::/var/run/sshd:/usr/sbin/nologin")
+group accounts: defined in /etc/group
+	data stored in table with colon (:) separated format, ex: 
+		mail:x:12:mail,postfix
+		sys:x:3:bin,lily
+	columns: "name:passwordplaceholder:groupid:userlist"
+		name: groupname shown to user
+		passwordplaceholder: password for group stored in specified location (x means password not stored in this file, default is /etc/gshadow)
+		groupid: GID used to identify group (like database primary key), file permission store GID instead of groupname
+		userlist: list users belong to this group (comma separated)
+show current user information: 
+	"id" (show UID, GID, list of groups)
+	"id usernamehere" (for specified user)
+	"id -u" (show UID)
+	"id -g" (show primary GID)
+	"id -G" (show all group GID)
+	"who" (show all logged in user, read from /var/log/utmp)
+	"w" (show all logged in user)
+		tty: show which terminal used (pts=pseudoterminal, tty=teletypewriter)
+		idle: how long user has been idle since last command
+		jcpu: total cpu time used by all process run by user since login
+		pcpu: total cpu time used by current process run by user since login
+		what: current process that user run
+	"last" (show login history, read from /var/log/wtmp)
+	"groups" (show group membership for current user)
+	"groups usernamehere" (show group membership for specified user)
+
+###16 - Creating Users and Groups
+User Private Group (UPG): group created along with user, which usually only have 1 member (that user himself/herself)
+create group:
+	groupadd groupnamehere # create group with name: groupnamehere
+	groupadd -g 1005 groupnamehere # assign specified GID
+	groupadd -r groupnamehere # assign low (for system user account) GID
+modify group:
+	groupmod groupnamehereold -n groupnameherenew # rename group, keep GID
+	groupmod groupnamehere -g 1006 # assign different GID
+delete group:
+	groupdel groupnamehere # delete group
+	find / -nogroup # find all files that have no group (orphaned), cause: group deleted, or GID changed
+create user:
+	useradd -D # show default configuration value for new user
+	/etc/default/useradd # file contains default configuration value for new user, this configures the default of /etc/passwd
+		GROUP -g : default GID for new user
+		HOME -b : default home directory for new user
+		INACTIVE -f : number of days after password expiry that the account is disabled
+		EXPIRE -e : epoch when the new user account expire
+		SHELL -s : default shell for new user
+		SKEL -k : set skeleton directory; content of skeleton directory will be copied to new user's home directory
+		do not directly change content of this file, use "adduser -D -f 30" for changing values
+	/etc/login.defs # file contains default configuration value for new user, this configures the default of /etc/shadow
+		MAIL_DIR : directory for mail spool
+		PASS_MAX_DAYS : user must change password before this number of days passed (maximum number of days the password is valid)
+		PASS_MIN_DAYS : user cannot change password more frequently than this number of day (minimum number of days to pass until user can change password again)
+		PASS_MIN_LEN : minimum length of user's password
+		PASS_WARN_AGE : number of days before password expiration that system show warning to user
+		UID_MIN : first UID that is assigned to an ordinary user
+		UID_MAX : maximum UID, recommended to be equal or less than 60000
+		GID_MIN	: first GID that is assigned to an ordinary group
+		GID_MAX : maximum GID, recommended to be equal or less than 60000
+		CREATE_HOME : whether a new home directory created for new user
+		UMASK : determines default permissions on home directory
+		USERGROUPS_ENAB : enable User Private Group (UPG)
+		ENCRYPT_METHOD : encryption method to encrypt users' passwords in /etc/shadow
+	naming convention: first character lowercase(a-z)/underscore(_), middle characters alphanumeric/underscore(_)/dash(-), last character not dash(-)
+	useradd flags:
+		-u 1005 # set UID
+		-g groupnamehere # set primarygroup
+		-G groupnamehere1,groupnamehere2,groupnamehere3 # set multiple groups
+		-M # don't create home directory
+		-m # do create home directory
+		-b /homee # specify home directory location
+		-d /homee/usernamehere # specify absolute location of home directory
+		-k /home/sysadmin # specify skeleton directory
+		-s /bin/bash # specify shell
+		-c 'some comment' # specify comment
+change password: "passwd" (self password), "passwd usernamehere" (change other user's password)
+manage password aging / expiration: 
+	chage # manage /etc/shadow
+	-l : list aging information
+	-d LAST_DAY : set date of the last password change to LAST_DAY
+	-E EXPIRE_DATE : set to expire on EXPIRE_DATE
+	-I INACTIVE	: set to permit login for INACTIVE days after password expires
+	-m MIN_DAYS : set minimum number of days before password can be changed to MIN_DAYS
+	-M MAX_DAYS	: set maximum number of days before password should be changed to MAX_DAYS
+	-W WARN_DAYS : set number of days before password expires to start displaying warning to WARN_DAYS
+modify user: "usermod", flags:
+	-c COMMENT : set comment field to COMMENT (--comment)
+	-d HOME_DIR	: set HOME_DIR as new home directory (--home)
+	-e EXPIRE_DATE : set account expiration date to EXPIRE_DATE (--expiredate)
+	-f INACTIVE : set account to permit login for INACTIVE days after password expires (--inactive)
+	-g GROUP : set GROUP as the primary group (--gid)
+	-G GROUPS : set supplementary groups to a list specified in GROUPS (--groups)
+	-aG : add user's supplemental groups with those specified by the -G option (--append)
+	-l LOGIN : change the user's login name (--login)
+	-L : lock user (--lock)
+	-s SHELL : specify shell (--shell)
+	-u NEW_UID : specify UID (--uid)
+	-U : unlock user (--unlock)
+delete user:
+	userdel usernamehere # delete user but keep home directory and mail spool
+	userdel -r usernamehere # delete user and delete keep home directory and mail spool
+
+###17 - Ownership and Permissions
+ownership (of user, of group) is associated with UID or GID
+change primary group: "newgrp groupnamehere"
+change group ownership
+	chgrp groupnamehere filenamehere # change group ownership of one file or directory
+	chgrp -R groupnamehere directoryname # change group ownership of a directory recursively
+	current user must be owner of the target file (or must belong to a group that owns the target file)
+change user ownership
+	use "chown" instead of "chgrp"
+	use "chown usernamehere:groupnamehere filenamehere" to change both at once (require administrative privilege)
+permission
+	subject who access file: u(user), g(group), o(other)
+	types: r(read), w(write), x(execute)
+		read: on file means content can be viewed/copied, on directory means files inside can be listed
+		write: on file means content can be changed, on directory means file can be added/deleted
+		execute: on file means can be executed/run as process, on directory means user can "cd" inside it and can use directory pathname to access files inside
+change permission: "chmod"
+	note: non administrative user cannot change ownership, even on his/her own file
+	symbolic method
+		user type: u(user), g(group), o(other), a(all)
+		operator: +(add), (-)remove, (=)equals
+		example: "chmod g+w filenamehere", "chmod ug+x,o-r filenamehere", "chmod u=rx filenamehere"
+	numeric method
+		octal: 4(read)=100_binary, 2(write)=010_binary, 1(execute)=001_binary
+		example:
+			rwx	111	7
+			rw-	110	6
+			r-x	101	5
+			r--	100	4
+			-wx	011	3
+			-w-	010	2
+			--x	001	1
+			---	000	0
+default permission
+	file: rw-rw-rw-(666) directory: rwxrwxrwx(777)
+	umask: number substracted from default file or directory permission to limit permission (default umask=002)
+		change umask
+			umask # view current umask number
+			edit ~/.bashrc # permanent
+			umask 003 # set it for current session only
+
+###18 - Special Directories and Files
+special file/directory permission
+	concept: file have additional octal to define special permission, this special octal usually omitted when displaying info
+		4(setuid)=100_binary, 2(setgid)=010_binary, 1(sticky)=001_binary
+	setuid (4000): 
+		allow executable file to be executed as file owner (usually used for file owned by root)
+		ex: passwd will change /etc/shadow file which needs root permission, but non administrative user must be able to use it to change his/her own password
+		changing permission: "chmod u+s filenamehere", "chmod 4755 filenamehere"
+		permission after addition: "-rwsr-xr-x" => 4755
+			lowercase s(setuid) in place of user's x(execute): means that user's x(execute) is also set
+			uppercase S(setuid) in place of user's x(execute): means that user's x(execute) is NOT set (problem, since setuid special permission have no meaning)
+	setgid (2000):
+		on file: allow executable file to be executed as member of the file's owner group
+			ex: wall (/usr/bin/wall owned by root:tty) allow user to write to file /dev/tty (owned by group tty)
+		on directory: cause files created in the directory to be owned by the group that owns the directory automatically
+			subdirectory will also have setgid permission set when created
+			ex: make a collaborative directory owned by group, in which members of that group consist of users with different primary groups
+				user "bob" member of "payroll" group, also member of "team1"
+				user "sue" member of "staff" group, also member of "team1"
+				user "tim" member of "acct" group, also member of "team1"
+				directory /home/team1/ permission: rwxrwx--- team1 team1
+				when "bob" create file1 permission: rw-rw---- bob payroll => other user cannot view/edit (assumed as "other")
+				after setting setgid on /home/team:
+				when "bob" create file1 permission: rw-rw---- bob team1 => other user can view/edit (assumed as "group")
+		changing permission: "chmod g+s filenamehere", "chmod 2770 filenamehere"
+		permission after addition: "-rwxrws---" => 2770
+			lowercase s(setgid) in place of group's x(execute): means that group's x(execute) is also set
+			uppercase S(setgid) in place of group's x(execute): means that group's x(execute) is NOT set (problem, since setgid special permission have no meaning)
+	sticky bit (1000):
+		only work on directory: only owner can delete file inside the directory, useful for sharing
+		ex: all user can write to /tmp directory, but only the owner of file can delete
+		changing permission: "chmod o+t directoryname", "chmod 1777 directoryname"
+		permission after addition: "drwxrwxrwt" => 1777
+			lowercase t(sticky) in place of other's x(execute): means that other's x(execute) is also set
+			uppercase T(sticky) in place of other's x(execute): means that other's x(execute) is NOT set (no problem, as long as user can still access directory content through "user" or "group" x(execute) permission)
+link
+	how file saved on linux filesystem (ext3/ext4)
+		filesystem have inode (index node) table, columns: inode number, file type, permission, owner UID/GID, size, timestamp, etc..., and location
+			note: "location" means location on filesystem (address/file position/in which actual drive block file is stored)
+			note: inode table don't contain filename
+		directories are actually a file that store table (tabular data), columns: filename, inode number of the file
+			ex: content of "/etc" directory type of "file":
+				name	inode
+				passwd	13427
+				shadow	2357
+				group	29375
+				gshadow	23762
+			ex: content of "/" directory type of "file":
+				name	inode
+				boot/	24
+				etc/	63
+				home/	13
+		when accessing file "/etc/passwd", 
+			- filesystem will try to read content of "/" file ==>> success (file found, the file is a directory, get a directory table) 
+			- filesystem look for entry/row/record with name="etc/" ==>> success (entry exist with inode number 63)
+			- filesystem look for entry/row/record in inode table with inode number=63 ==>> success (get drive block that store file with inode number=63)
+			- filesystem will try to read content of "/etc/" file (filesystem read drive block) ==>> (file found, the file is a directory, get a directory table) 
+			- filesystem look for entry/row/record with name="shadow" ==>> success (entry exist with inode number 2357)
+			- filesystem look for entry/row/record in inode table with inode number=2357 ==>> success (get drive block that store file with inode number=2357)
+			- filesystem will try to read content of "/etc/passwd" file (filesystem read drive block) ==>> success (file found, done)
+		show file status: "stat filename" (name, timestamp, which storage device, size, type, inode number, owner UID/GID)
+		list show inode number: "ls -i"
+		find file by inode: "find / -inum 31492"
+		show inode usage: "df -i"
+	hard link
+		ln targetfile linkname
+		hard link: in current directory table, add a new entry called "linkname", with inode number equals to inode number of "targetfile"
+			if "targetfile" deleted, "linkname" can still be used to read/write/execute/access the file (in fact, "targetfile" and "linkname" is exactly equal, there is no "original vs link" relationship anymore since both are "original")
+			hard link cannot link to directory (to prevent cyclic structure of directory tree, ex: /a/b/c/d/ points to /a/, then recursive search can stuck running /a/b/c/d/b/c/d/b/c/d/b/c/d/...)
+			hard link cannot link to file on another filesystem (ex: on another partition or another drive device) because each filesystem have its own set of inode table (ex: in RDBMS, id=1 in table1 stores different thing than id=1 in table2)
+	symbolic link (soft link / symlink)
+		ln -s targetfile linkname
+		symbolic link: create a new file called "linkname" that points to file "targetfile" (more like windows .lnk shortcut)
+			if "targetfile" deleted, "linkname" will be a "broken link" (useless since the file it points to no longer exist)
+			symbolic link can link to directory
+			symbolic link can link to file on another filesystem (since the symbolic link file only contains path to where original file is located)

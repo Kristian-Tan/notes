@@ -1,0 +1,53 @@
+GOAL: 
+- rolling release distribution (no need to completely format the root partition and get used to new desktop environment)
+- ease of usage for non-technical user
+- run on old hardware (lightweight desktop environment is a must, lightweight distribution that use low disk space is a plus)
+- not sending data to third party is a plus
+- no ubuntu based distribution: target user (not me) hated them (more specifically, the name ubuntu itself), a.k.a.: no mint, peppermint, lubuntu, xubuntu, etc.
+
+
+install Solus-4.1-MATE from multiboot yumi
+- add ISO to flash drive as "other OS from SYSLINUX"
+- live boot from flash drive, before automatic Solus booting, press tab (to bring out boot command)
+- change "/boot/kernel" and "/boot/initramfs.img" to "/multiboot/Solus-4.1-MATE/boot/kernel" and "/multiboot/Solus-4.1-MATE/boot/initramfs.img"
+- computer should now boot to live Solus
+- try to run /usr/bin/os-installer-gtk (or click desktop shortcut/link)
+- if error "source missing, cannot find image squashfs.img", edit file /usr/lib/python2.7/site-packages/os_installer2/__init__.py
+	- change SOURCE_FILESYSTEM variable (append "/multiboot/Solus-4.1-MATE" after "/run/initramfs/live")
+	- SOURCE_FILESYSTEM = "/run/initramfs/live/multiboot/Solus-4.1-MATE/LiveOS/squashfs.img"
+- if "disk: examining local storage devices" taking too long, 
+	- see which partition to install Solus to by running "cfdisk /dev/sdb" or "cfdisk /dev/sdb" or "fdisk -l"
+	- for example, partition to install is "dev/sdb7"
+	- edit file /usr/lib/python2.7/site-packages/os_installer2/diskman.py
+	- go to last lines, on class DiskManager on function parse_system_disk
+	- find line "blacklist = []"
+	- change to "blacklist = ['/dev/sdb1', '/dev/sdb2', '/dev/sdb3', '/dev/sdb4', '/dev/sdb5', '/dev/sdb6']"
+	- basically just blacklist all other disk partition that won't be installed
+- seems that eopkg package manager is not very comprehensive (not complete)
+- seems that desktop environment have random harmless crash (showing error message) on login
+
+install Manjaro 20 Xfce from vetoy multiboot
+- don't connect to internet while on setup (may make setup stuck at first stage)
+- after installation: install "vlc", "firefox", "libreoffice-still"
+- after installation: fix xfce file manager search function: delete "midori" (default lightweight browser) and "zeitgeist" (since it conflicts with catfish), then install "catfish"
+- after installation: install "manjaro-printer", add HP1510 through CUPS administration web (localhost)
+- after installation: added swap
+	fallocate -l 1G /swapfile
+	chmod 600 /swapfile
+	chown root /swapfile
+	mkswap /swapfile
+	swapon /swapfile
+	append this to "/etc/fstab": "/swapfile swap swap defaults 0 0"
+	adjust swappiness value (default to 60), append this to "/etc/sysctl.conf": "vm.swappiness=50"
+
+install lubuntu 18.04 (lxde)
+- easy installation (but no live desktop)
+- fast
+- no trouble in installation (no need to cut internet, no modifying files, run well with yumi)
+- preinstalled packages satisfy daily desktop computer needs (firefox, video player, gnumeric, abiword)
+- still need to install libreoffice for presentation/slide
+
+install puppy (bionic)
+- not really easy to install
+- very basic desktop environment
+- fast
