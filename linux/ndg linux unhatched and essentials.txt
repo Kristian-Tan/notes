@@ -770,6 +770,7 @@ tools:
 			ip link set eth0 up # enable interface, change "up" with "down" to disable interface
 			ip addr add 192.168.1.105/24 dev eth0 # set IP address to interface, change "add" with "del" to unset IP address
 			ip route add 10.10.20.0/24 via 192.168.1.1 dev eth0 # set static routing, change "add" with "del" to delete static routing table entry
+			ip route add default via 192.168.1.1 dev eth0 # add gateway, equal with adding a route to 0.0.0.0/0
 		ss (socket statistic)
 			output columns: Netid=transport protocol, State=established/closed, Recv-Q/Send-Q=receive/send queue (data stream), local/remote address:port
 			ss -s: summary/statistic (aggregated)

@@ -4,7 +4,7 @@ steps:
 - install python package ```setuptools```, ```wheel```, ```twine```, ```tqdm```
 - make directory with your package in it
 - create executable inside the package
-- create setup.py file, content:
+- create ```setup.py``` file, content:
 ```
 import setuptools
 with open("README.md", "r") as fh:
@@ -27,10 +27,10 @@ setuptools.setup(
      ],
  )
 ```
-- note: file in scripts are copied to PATH in linux (to make it easier to execute your module), it's better to leave it empty
-- add LICENSE file, add README.md file
-- compile with command: python3 setup.py bdist_wheel
-- make file C:/Users/UserName/.pypirc (widows) or ~/.pypirc (linux), content:
+- note: file in scripts are copied to ```PATH``` in linux (to make it easier to execute your module), it's better to leave it empty
+- add ```LICENSE``` file, add ```README.md``` file
+- compile with command: ```python3 setup.py bdist_wheel```
+- make file ```C:/Users/UserName/.pypirc``` (widows) or ```~/.pypirc (linux)```, content:
 ```
 [distutils]
 index-servers=pypi
@@ -42,6 +42,19 @@ username = myusername
 - install on other machine: ```python3 -m pip install packagenamehere```
 
 NOTE:
-- when creating new version/new release, edit setup.py and change upload command (version number) to upload only the new release (to prevent 'already exist' error)
+- when creating new version/new release, edit ```setup.py``` and change upload command (version number) to upload only the new release (to prevent 'already exist' error)
 - when making a module (kind of library of classes or methods that can be called by other scripts, ex: like tkinter, PonyORM), use ```__init__.py``` to import your classes (that file will be executed when the module is imported)
-- when making an executable (ex: like PumpkinLB), use ```__main__.py``` to make the package executable (put main program there), it can then be called with python -m packagenamehere
+- when making an executable (ex: like PumpkinLB), use ```__main__.py``` to make the package executable (put main program there), it can then be called with ```python -m packagenamehere```
+
+FASTER UPLOAD WITH API:
+- go to https://pypi.org/manage/account/token/
+- create token
+- edit ```.pypirc``` file (see above)
+```
+[distutils]
+index-servers=pypi
+[pypi]
+repository = https://upload.pypi.org/legacy/
+username = __token__
+password = pypi-Ag*********************************************************************************************************************************************************************
+```

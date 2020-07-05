@@ -1,0 +1,30 @@
+show GUI package manager
+/usr/lib/YaST2/bin/sw_single_wrapper
+
+
+
+command line: zypper
+https://www.unixmen.com/linux-basics-zypper-usage-opensuse/
+
+update repository
+zypper refresh
+
+upgrade all
+zypper update
+zypper patch
+zypper dist-upgrade
+
+install specific package
+zypper install packagenamehere
+
+uninstall specific package
+zypper remove packagenamehere
+zypper remove --clean-deps packagenamehere
+
+search package
+zypper search packagenamehere
+
+
+
+bloats:
+mozilla thunderbird, gimp, pidgin, shotwell, xfce4-dict, pragha, parole, metamail, postfix, procmail, system-user-mail, seahorse,

@@ -5,6 +5,41 @@ GOAL:
 - not sending data to third party is a plus
 - no ubuntu based distribution: target user (not me) hated them (more specifically, the name ubuntu itself), a.k.a.: no mint, peppermint, lubuntu, xubuntu, etc.
 
+- main things to look for in a distro: 
+	- package management (pacman/apt/rpm/etc)
+		- is there any GUI package manager (pamac/synaptic)
+		- how to install non-supported packages (ppa/aur/adding repository/directly downloading package installer like windows)
+		- repository
+			- how complete is the repository
+			- how stable vs bleeding edge is the repository
+			- how easy to migrate repository / mirror
+	- release method (rolling/point/very long LTS)
+		- point release might be annoying to reinstall every few years (because of unsupported security update), especially when using on rarely used PC
+		- rolling release might be annoying to find bug / breaking changes, rolling release might also refuse/error to update if too old
+	- stability vs bleeding edge: 
+		- stability means no bug, no error (point release mostly favor stability, 3-5 year LTS even more, 20 year LTS extremely favor stability)
+		- bleeding edge means newer software arrived faster, better support for new hardware (rolling release mostly favor bleeding edge)
+	- desktop environment
+		- it's often best to just use desktop environment that supported officially (ex: using cinnamon with mint) than using desktop environment supported by community (ex: using lxde with manjaro)
+		- is the desktop environment availabile from the start (bundled with installer), or must be installed later
+		- might be very important for installation for non-IT user or for very minimum or old hardware
+		- fast vs complete desktop environment:
+			- fast: no jitter, load quickly, minimum lag (no desktop environment extremely favor fast)
+			- complete: customizable, a lot of icon (windows favor complete desktop environment)
+			- opinion/preference: fast <<< tty (no desktop environment) , lxde/lxqt , xfce , mate , unity/gnome/cinnamon , kde , windows >>> complete
+				- don't like: unity (very slow), gnome (like unity), lxqt (abandoned)
+				- like on minimum hardware: xfce, lxde
+				- like on maximum hardware: kde plasma
+	- how easy to install
+		- have graphical installer? (Ubuntu), have installer script if cli only? (Lubuntu), or DIY? (Arch)
+		- how customizable the installer (ex: don't install bootloader)
+		- will it install bloat? (ex: mail client)
+	- other minor points
+		- can install/change kernel (arch/manjaro)
+		- network manager (ConnMan/NetworkManager/wpa_supplicant/net_tools/iproute2)
+		- system init (systemd/runit)
+		- ease of configuration (yast)
+
 
 install Solus-4.1-MATE from multiboot yumi
 - add ISO to flash drive as "other OS from SYSLINUX"
@@ -15,6 +50,7 @@ install Solus-4.1-MATE from multiboot yumi
 - if error "source missing, cannot find image squashfs.img", edit file /usr/lib/python2.7/site-packages/os_installer2/__init__.py
 	- change SOURCE_FILESYSTEM variable (append "/multiboot/Solus-4.1-MATE" after "/run/initramfs/live")
 	- SOURCE_FILESYSTEM = "/run/initramfs/live/multiboot/Solus-4.1-MATE/LiveOS/squashfs.img"
+	- this error happen when using yumi multiboot
 - if "disk: examining local storage devices" taking too long, 
 	- see which partition to install Solus to by running "cfdisk /dev/sdb" or "cfdisk /dev/sdb" or "fdisk -l"
 	- for example, partition to install is "dev/sdb7"
@@ -27,18 +63,56 @@ install Solus-4.1-MATE from multiboot yumi
 - seems that desktop environment have random harmless crash (showing error message) on login
 
 install Manjaro 20 Xfce from vetoy multiboot
+- booting live/installer ISO compatible with Ventoy
 - don't connect to internet while on setup (may make setup stuck at first stage)
 - after installation: install "vlc", "firefox", "libreoffice-still"
 - after installation: fix xfce file manager search function: delete "midori" (default lightweight browser) and "zeitgeist" (since it conflicts with catfish), then install "catfish"
 - after installation: install "manjaro-printer", add HP1510 through CUPS administration web (localhost)
 - after installation: added swap
-	fallocate -l 1G /swapfile
+	fallocate -l 1G /swapfile # or: dd if=/dev/zero of=/swapfile count=1024 bs=1MiB
 	chmod 600 /swapfile
 	chown root /swapfile
 	mkswap /swapfile
 	swapon /swapfile
 	append this to "/etc/fstab": "/swapfile swap swap defaults 0 0"
 	adjust swappiness value (default to 60), append this to "/etc/sysctl.conf": "vm.swappiness=50"
+- after installation: install LAMP stack
+	pacman -S apache php php-apache mysql phpmyadmin
+	# setup and test httpd (apache)
+	systemctl enable httpd
+	systemctl restart httpd
+	# setup mysql
+	mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+	systemctl enable mysqld
+	systemctl start mysqld
+	mysql_secure_installation
+	# setup php
+	# in file /etc/httpd/conf/httpd.conf
+	# comment "LoadModule mpm_event_module modules/mod_mpm_event.so"
+	# uncomment "LoadModule mpm_prefork_module modules/mod_mpm_prefork.so"
+	# add line "LoadModule php7_module modules/libphp7.so"
+	# add line "AddHandler php7-script php"
+	# add line "Include conf/extra/php7_module.conf"
+	# in file /etc/php/php.ini
+	# uncomment "extension=bz2" "extension=mysqli" and other extension that may be used
+	systemctl restart httpd
+	# setup vhost for phpmyadmin
+	# in file /etc/httpd/conf/httpd.conf
+	# comment "<Directory /> \r\n AllowOverride none \r\n Require all denied \r\n </Directory>"
+	# uncomment "Include conf/extra/httpd-vhosts.conf"
+	# in file /etc/httpd/conf/extra/httpd-vhosts.conf
+	# create vhost to point to "/usr/share/webapps/phpMyAdmin"
+	# setup mod rewrite and htaccess
+	# in file /etc/httpd/conf/httpd.conf
+	# uncomment "LoadModule rewrite_module modules/mod_rewrite.so"
+	pacman -S postgresql phppgadmin
+	su postgres -l
+	initdb --locale $LANG -E UTF8 -D /var/lib/postgres/data/
+	systemctl enable postgresql
+	systemctl start postgresql
+	# in file /usr/share/webapps/phppgadmin/conf/config.inc.php
+	# change $conf['extra_login_security'] = false
+	
 
 install lubuntu 18.04 (lxde)
 - easy installation (but no live desktop)
@@ -51,3 +125,136 @@ install puppy (bionic)
 - not really easy to install
 - very basic desktop environment
 - fast
+
+install linux mint 20 cinnamon
+- booting live/installer ISO compatible with Ventoy
+- easy to install, easy to use, I think it's even possible for installation and usage without touching terminal/cli
+- very heavy (normal install + update + multimedia codec result in 8GB+ disk usage)
+- cinnamon desktop environment not very fast
+- libreoffice preinstalled
+- graphical package manager support parallel download, selecting mirrors
+
+install CentOS 8 (release 2009, supported until 2029)
+- using very outdated linux kernel (seems like CentOS is very "stable" and very not "bleeding edge")
+- option to not install bootloader not very visible, resulting in deleted all EFI boot entry (apparently installer said: fail to add EFI boot entry) >>> unbootable PC until using super grub2 rescue disk + windows installer ISO bcdboot
+- cannot choose desktop environment, only GNOME availabile
+
+install fedora 32
+- installer very similar to CentOS (more like: CentOS intaller use fedora installer instead)
+- don't have option to rename computer (showing as user@localdomain or user@localhost or user@192)
+- use package manager: dnf (new) or yum (old)
+- dnf support parallel download
+- updating: "dnf update" (automatically update repository, then download-install packages)
+- install: "dnf install htop"
+
+OpenSUSE
+- don't have option to rename computer (showing as user@localdomain or user@localhost or user@192)
+- problem on playing media (h264 encoded video), requires adding packman repository and migrating a lot of packages to new repository
+- repository seems to be very limited
+- have GUI configuration editor YaST (almost complete like window's control panel)
+- show GUI package manager: /usr/lib/YaST2/bin/sw_single_wrapper
+- package manager command line: zypper
+	- update repository: zypper refresh
+	- upgrade all: zypper update OR zypper patch OR zypper dist-upgrade
+	- install specific package: zypper install packagenamehere
+	- uninstall specific package: zypper remove packagenamehere OR zypper remove --clean-deps packagenamehere
+	- search package: zypper search packagenamehere
+
+
+antiX
+- very light (no desktop environment, just window manager default to IceWM)
+- have lots of tools preinstalled tools (for rescue, for ease of installation and recommended tools, office)
+- user interface not really customizable (need to edit configuration text file instead of GUI configuration)
+- easy installation, installer have lots of options
+- based on debian (apt, dpkg, synaptic)
+- have lots of "workaround" apps for old computer like:
+	- dillo: GUI web browser (no video, no javascript)
+	- links2: CLI web browser
+	- ceni: interactive CLI to manage network interface
+	- mps-youtube/mpsyt: interactive CLI to play youtube video/audio, faster than using web browser
+	- smtube: youtube for SMPlayer
+	- droopy: CLI for LAN HTTP file sharing/sending/receiving
+- have lots of "complete" apps like:
+	- modem/mobile network (seems like antiX is not PC exclusive)
+	- transmission: torrent client
+	- winFF: media encoder (like format factory)
+	- streamtuner2: internet radio streaming (must change setting to use xmms instead of default media player)
+	- games: DOS emulator, mahjong, jewel (candy crush like)
+	- adblock
+	- support for networks: ADLS/PPoE/PPP
+	- rsync
+- have a lot of apps that have same functionality (seems like being included anyway for the sake of providing alternatives if one is not supported)
+- conky
+
+
+arch
+- installation: (listed here only general steps, please refer to install.txt on live ISO)
+	- download and load/boot disk image
+	- connect to internet
+		- wifi-menu # for easy wireless network setup
+		- pacman -S reflector
+		- reflector --country Indonesia --save /etc/pacman.d/mirrorlist
+	- partition disk with fdisk/cfdisk, then make filesystem, then mount
+		- (optional) create ESP partition: for UEFI only, check if boot in EFI mode: "ls /sys/firmware/efi/efivars"
+			- mkfs.fat -F32 /dev/sda1
+			- mount /dev/sda2 /mnt/boot/efi
+		- create root partition
+			- mkfs.ext4 /dev/sda2
+			- mount /dev/sda2 /mnt
+	- install
+		- pacstrap /mnt base linux linux-firmware vim nano iw iwd wpa_supplicant dhcpcd dialog grub efibootmgr amd-ucode intel-ucode
+		- mandatory install: base linux linux-firmware
+		- (optional) text editor: vim nano
+		- (optional) wireless networking: iw iwd wpa_supplicant dhcpcd dialog
+		- (optional) boot manager: grub efibootmgr
+		- (optional) microcode (updates made by processor manufacturer for stability/security, loaded by grub automatically on initrd command): amd-ucode intel-ucode
+	- configure
+		- genfstab -U /mnt >> /mnt/etc/fstab # generate fstab
+		- arch-chroot /mnt
+		- echo myarch > /etc/hostname # set hostname
+		- nano /etc/hosts # create hosts file
+			127.0.0.1	localhost
+			::1		localhost
+			127.0.1.1	myarch
+		- ln -sf /usr/share/zoneinfo/{{Region}}/{{City}} /etc/localtime # change timezone
+		- hwclock --systohc # set hardware clock to current UTC time
+		- passwd # change root password
+		- mkinitcpio -P # create initramfs (usually not needed, only use for LVM/encryption/RAID)
+		- grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi # for UEFI install grub on ESP, add news UEFI boot entry
+		- grub-install /dev/sda # for legacy BIOS, (maybe?) add grub to MBR (maybe?)
+		- grub-mkconfig -o /boot/grub/grub.cfg # generate grub configuration
+	- after installation
+		- add non-root user: 
+			- useradd -m -g users -G storage,power,wheel -s /bin/bash usernamehere
+			- passwd usernamehere
+			- edit /etc/sudoers, add line "usernamehere ALL=(ALL) ALL" to enable sudo for user
+		- install desktop environment
+			- must install: xorg lxdm
+			- select desktop environment
+				- xfce: xfce4 xfce4-goodies
+				- gnome: gnome gnome-extra
+				- cinnamon: cinnamon nemo-fileroller
+				- kde: plasma
+				- mate: mate mate-extra
+			- after install: systemctl enable lxdm
+			- NOTE: installing xorg and lxdm consume about 300MB, installing xfce4 and xfce4-goodies consume about 500MB
+		- configure wireless network access
+			- install packages: "iw iwd wpa_supplicant dialog"
+			- start iwd service: systemctl start iwd
+			- run iwd console: iwctl
+				- scan wireless networks: station wlan0 get-networks
+				- connect to a network: station wlan0 connect KristianWifi
+				- insert password / pre-shared key when asked
+				- show connected network: station wlan0 status
+			- configure ip address and gateway (not using dhcp)
+				- enable interface: ip link set wlan0 up
+				- ip addr add 192.168.1.132/24 dev wlan0
+				- ip route add default via 192.168.1.1 dev wlan0
+			- configure dns (not using dhcp): edit file /etc/resolv.conf, add line "nameserver 8.8.8.8"
+		- configure for everyday desktop task:
+			- browser: firefox or chromium
+			- office: libreoffice
+			- video-audio: parole gst-libav pulseaudio pavucontrol
+
+
+
