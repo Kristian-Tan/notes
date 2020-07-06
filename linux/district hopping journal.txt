@@ -194,6 +194,7 @@ arch
 		- wifi-menu # for easy wireless network setup
 		- pacman -S reflector
 		- reflector --country Indonesia --save /etc/pacman.d/mirrorlist
+		- timedatectl set-ntp true
 	- partition disk with fdisk/cfdisk, then make filesystem, then mount
 		- (optional) create ESP partition: for UEFI only, check if boot in EFI mode: "ls /sys/firmware/efi/efivars"
 			- mkfs.fat -F32 /dev/sda1
@@ -218,6 +219,8 @@ arch
 			127.0.1.1	myarch
 		- ln -sf /usr/share/zoneinfo/{{Region}}/{{City}} /etc/localtime # change timezone
 		- hwclock --systohc # set hardware clock to current UTC time
+		- nano /etc/locale.gen # uncomment locale needed (usually LANG=en_US.UTF-8)
+		- locale-gen # generate locale from /etc/locale.gen
 		- passwd # change root password
 		- mkinitcpio -P # create initramfs (usually not needed, only use for LVM/encryption/RAID)
 		- grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi # for UEFI install grub on ESP, add news UEFI boot entry
@@ -246,11 +249,17 @@ arch
 				- connect to a network: station wlan0 connect KristianWifi
 				- insert password / pre-shared key when asked
 				- show connected network: station wlan0 status
-			- configure ip address and gateway (not using dhcp)
-				- enable interface: ip link set wlan0 up
-				- ip addr add 192.168.1.132/24 dev wlan0
-				- ip route add default via 192.168.1.1 dev wlan0
-			- configure dns (not using dhcp): edit file /etc/resolv.conf, add line "nameserver 8.8.8.8"
+			- configure with dhcp (in case computer don't automatically get IP address, usually without executing these dhcpcd would get IP address):
+				- release leased IP address: dhcpcd --release wlan0
+				- run dhcpcd if not started yet, then renew leased address: dhcpcd --renew wlan0
+				- run dhcpcd if not started yet, then reload configuration, then renew leased address: dhcpcd --rebind wlan0
+				- re-apply IP address and routing each interface: dhcpcd --reconfigure
+			- configure without dhcp
+				- configure ip address and gateway (not using dhcp)
+					- enable interface: ip link set wlan0 up
+					- ip addr add 192.168.1.132/24 dev wlan0
+					- ip route add default via 192.168.1.1 dev wlan0
+				- configure dns (not using dhcp): edit file /etc/resolv.conf, add line "nameserver 8.8.8.8"
 		- configure for everyday desktop task:
 			- browser: firefox or chromium
 			- office: libreoffice

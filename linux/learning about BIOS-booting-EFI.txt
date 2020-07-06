@@ -30,7 +30,7 @@ adding grub to boot entry:
 ```mount /dev/sda1 /boot/efi/``` >>> assuming your EFI boot partition is on /dev/sda1
 ```grub-install /dev/sda --target=x86_64-efi --efi-directory=/boot/efi/``` >>> if failed, try adding "--no-nvram" or "--removable" or "--force" or "--force-extra-removable"
 ```ls /boot/efi/EFI/``` >>> find where grub-install saved it's .efi file, usually called "grubx64.efi"
-```efibootmgr --create --disk /dev/sda -part 1 -L <label> -l \EFI\<label>\grubx64.efi``` >>> label is the directory found in previous step, make sure the path is actually accessbile (can be found), ```-p 1``` means on partition 1 (equals to /dev/sda1)
+```efibootmgr --create --disk /dev/sda --part 1 -L <label> -l \EFI\<label>\grubx64.efi``` >>> label is the directory found in previous step, make sure the path is actually accessbile (can be found), ```-p 1``` means on partition 1 (equals to /dev/sda1)
 
 
 

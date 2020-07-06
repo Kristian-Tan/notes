@@ -51,6 +51,7 @@ pacman
 			pacman -Qs vlc # search installed package "vlc"
 			pacman -Qi vlc # search package "vlc" and display detailed information
 			pacman -Ql vlc # search file owned by package "vlc"
+			pacman -Qe # list explicitly installed package
 			pacman -Qdt # display list of unused packages
 			pacman -Qdtq # display list of unused packages (-q quiet flag means: without version, just package name) 
 			pacman -Rns $(pacman -Qdtq) # remove all unused packages
