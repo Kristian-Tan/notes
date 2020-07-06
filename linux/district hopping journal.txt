@@ -189,81 +189,109 @@ antiX
 
 arch
 - installation: (listed here only general steps, please refer to install.txt on live ISO)
-	- download and load/boot disk image
-	- connect to internet
-		- wifi-menu # for easy wireless network setup
-		- pacman -S reflector
-		- reflector --country Indonesia --save /etc/pacman.d/mirrorlist
-		- timedatectl set-ntp true
-	- partition disk with fdisk/cfdisk, then make filesystem, then mount
-		- (optional) create ESP partition: for UEFI only, check if boot in EFI mode: "ls /sys/firmware/efi/efivars"
-			- mkfs.fat -F32 /dev/sda1
-			- mount /dev/sda2 /mnt/boot/efi
-		- create root partition
-			- mkfs.ext4 /dev/sda2
-			- mount /dev/sda2 /mnt
-	- install
-		- pacstrap /mnt base linux linux-firmware vim nano iw iwd wpa_supplicant dhcpcd dialog grub efibootmgr amd-ucode intel-ucode
-		- mandatory install: base linux linux-firmware
-		- (optional) text editor: vim nano
-		- (optional) wireless networking: iw iwd wpa_supplicant dhcpcd dialog
-		- (optional) boot manager: grub efibootmgr
-		- (optional) microcode (updates made by processor manufacturer for stability/security, loaded by grub automatically on initrd command): amd-ucode intel-ucode
-	- configure
-		- genfstab -U /mnt >> /mnt/etc/fstab # generate fstab
-		- arch-chroot /mnt
-		- echo myarch > /etc/hostname # set hostname
-		- nano /etc/hosts # create hosts file
-			127.0.0.1	localhost
-			::1		localhost
-			127.0.1.1	myarch
-		- ln -sf /usr/share/zoneinfo/{{Region}}/{{City}} /etc/localtime # change timezone
-		- hwclock --systohc # set hardware clock to current UTC time
-		- nano /etc/locale.gen # uncomment locale needed (usually LANG=en_US.UTF-8)
-		- locale-gen # generate locale from /etc/locale.gen
-		- passwd # change root password
-		- mkinitcpio -P # create initramfs (usually not needed, only use for LVM/encryption/RAID)
-		- grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi # for UEFI install grub on ESP, add news UEFI boot entry
-		- grub-install /dev/sda # for legacy BIOS, (maybe?) add grub to MBR (maybe?)
-		- grub-mkconfig -o /boot/grub/grub.cfg # generate grub configuration
-	- after installation
-		- add non-root user: 
-			- useradd -m -g users -G storage,power,wheel -s /bin/bash usernamehere
-			- passwd usernamehere
-			- edit /etc/sudoers, add line "usernamehere ALL=(ALL) ALL" to enable sudo for user
-		- install desktop environment
-			- must install: xorg lxdm
-			- select desktop environment
-				- xfce: xfce4 xfce4-goodies
-				- gnome: gnome gnome-extra
-				- cinnamon: cinnamon nemo-fileroller
-				- kde: plasma
-				- mate: mate mate-extra
-			- after install: systemctl enable lxdm
-			- NOTE: installing xorg and lxdm consume about 300MB, installing xfce4 and xfce4-goodies consume about 500MB
-		- configure wireless network access
-			- install packages: "iw iwd wpa_supplicant dialog"
-			- start iwd service: systemctl start iwd
-			- run iwd console: iwctl
-				- scan wireless networks: station wlan0 get-networks
-				- connect to a network: station wlan0 connect KristianWifi
-				- insert password / pre-shared key when asked
-				- show connected network: station wlan0 status
-			- configure with dhcp (in case computer don't automatically get IP address, usually without executing these dhcpcd would get IP address):
-				- release leased IP address: dhcpcd --release wlan0
-				- run dhcpcd if not started yet, then renew leased address: dhcpcd --renew wlan0
-				- run dhcpcd if not started yet, then reload configuration, then renew leased address: dhcpcd --rebind wlan0
-				- re-apply IP address and routing each interface: dhcpcd --reconfigure
-			- configure without dhcp
-				- configure ip address and gateway (not using dhcp)
-					- enable interface: ip link set wlan0 up
-					- ip addr add 192.168.1.132/24 dev wlan0
-					- ip route add default via 192.168.1.1 dev wlan0
-				- configure dns (not using dhcp): edit file /etc/resolv.conf, add line "nameserver 8.8.8.8"
-		- configure for everyday desktop task:
-			- browser: firefox or chromium
-			- office: libreoffice
-			- video-audio: parole gst-libav pulseaudio pavucontrol
-
+- download and load/boot disk image
+- connect to internet
+	- wifi-menu # for easy wireless network setup
+	- pacman -S reflector
+	- reflector --country Indonesia --save /etc/pacman.d/mirrorlist
+	- timedatectl set-ntp true
+- partition disk with fdisk/cfdisk, then make filesystem, then mount
+	- (optional) create ESP partition: for UEFI only, check if boot in EFI mode: "ls /sys/firmware/efi/efivars"
+		- mkfs.fat -F32 /dev/sda1
+		- mount /dev/sda2 /mnt/boot/efi
+	- create root partition
+		- mkfs.ext4 /dev/sda2
+		- mount /dev/sda2 /mnt
+- install
+	- pacstrap /mnt base linux linux-firmware vim nano iw iwd wpa_supplicant dhcpcd dialog grub efibootmgr amd-ucode intel-ucode
+	- mandatory install: base linux linux-firmware
+	- (optional) text editor: vim nano
+	- (optional) wireless networking: iw iwd wpa_supplicant dhcpcd dialog
+	- (optional) boot manager: grub efibootmgr
+	- (optional) microcode (updates made by processor manufacturer for stability/security, loaded by grub automatically on initrd command): amd-ucode intel-ucode
+- configure
+	- genfstab -U /mnt >> /mnt/etc/fstab # generate fstab
+	- arch-chroot /mnt
+	- echo myarch > /etc/hostname # set hostname
+	- nano /etc/hosts # create hosts file
+		127.0.0.1	localhost
+		::1		localhost
+		127.0.1.1	myarch
+	- ln -sf /usr/share/zoneinfo/{{Region}}/{{City}} /etc/localtime # change timezone
+	- hwclock --systohc # set hardware clock to current UTC time
+	- nano /etc/locale.gen # uncomment locale needed (usually LANG=en_US.UTF-8)
+	- locale-gen # generate locale from /etc/locale.gen
+	- passwd # change root password
+	- mkinitcpio -P # create initramfs (usually not needed, only use for LVM/encryption/RAID)
+	- grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi # for UEFI install grub on ESP, add news UEFI boot entry
+	- grub-install /dev/sda # for legacy BIOS, (maybe?) add grub to MBR (maybe?)
+	- grub-mkconfig -o /boot/grub/grub.cfg # generate grub configuration
+- after installation
+	- add non-root user: 
+		- useradd -m -g users -G storage,power,wheel -s /bin/bash usernamehere
+		- passwd usernamehere
+		- edit /etc/sudoers, add line "usernamehere ALL=(ALL) ALL" to enable sudo for user
+	- install desktop environment
+		- must install: xorg lxdm
+		- select desktop environment
+			- xfce: xfce4 xfce4-goodies
+			- gnome: gnome gnome-extra
+			- cinnamon: cinnamon nemo-fileroller
+			- kde: plasma
+			- mate: mate mate-extra
+		- after install: systemctl enable lxdm
+		- NOTE: installing xorg and lxdm consume about 300MB, installing xfce4 and xfce4-goodies consume about 500MB
+	- configure wireless network access
+		- install packages: "iw iwd wpa_supplicant dialog"
+		- start iwd service: systemctl start iwd
+		- run iwd console: iwctl
+			- scan wireless networks: station wlan0 get-networks
+			- connect to a network: station wlan0 connect KristianWifi
+			- insert password / pre-shared key when asked
+			- show connected network: station wlan0 status
+		- configure with dhcp (in case computer don't automatically get IP address, usually without executing these dhcpcd would get IP address):
+			- release leased IP address: dhcpcd --release wlan0
+			- run dhcpcd if not started yet, then renew leased address: dhcpcd --renew wlan0
+			- run dhcpcd if not started yet, then reload configuration, then renew leased address: dhcpcd --rebind wlan0
+			- re-apply IP address and routing each interface: dhcpcd --reconfigure
+		- configure without dhcp
+			- configure ip address and gateway (not using dhcp)
+				- enable interface: ip link set wlan0 up
+				- ip addr add 192.168.1.132/24 dev wlan0
+				- ip route add default via 192.168.1.1 dev wlan0
+			- configure dns (not using dhcp): edit file /etc/resolv.conf, add line "nameserver 8.8.8.8"
+	- configure for everyday desktop task:
+		- browser: firefox or chromium
+		- office: libreoffice
+		- video-audio: parole gst-libav pulseaudio pavucontrol
+	- configure dual booting with windows (or other OS):
+		- open grub console (press 'c' when booting)
+		- windows: with 'ls' command, find partition name (ex: (hd0,msdos1)) and windows bootloader (ex: /EFI/Microsoft/boot/bootmgfw.efi)
+		- linux: with 'ls' command, find partition name (ex: (hd0,msdos4)) and linux kernel (ex: /boot/vmlinuz) and initramfs (ex: /boot/initramfs)
+		- edit /etc/grub.d/40_custom
+			menuentry "Windows" {
+				insmod chain
+				insmod part_gpt
+				set root=(hd0,msdos1)
+				chainloader /EFI/Microsoft/boot/bootmgfw.efi
+			}
+			menuentry "OtherLinux" {
+				set root=(hd0,msdos3)
+				linux /boot/vmlinuz
+				initrd /boot/initramfs.img
+			}
+		- note: "set root" command can be changed with: (find ESP partition's UUID from 'blkid' command)
+			insmod search_fs_uuid
+			search --fs-uuid --no-floppy --set=root XXXXXXXXX
+			chainloader /efi/Microsoft/Boot/bootmgfw.efi
+		- note: if windows bootloader is missing (ex: because of formatting ESP from command: "mkfs.fat -F32 /dev/sda1")
+			- boot windows installer disk
+			- choose repair -> advanced option -> command line / cmd
+			- run "diskpart"
+			- use these commands: "list disk" -> "select disk N" -> "list partition" -> "list volume"
+			- identify drive letter where windows installation is (ex: C:\Windows) and identify where ESP drive letter is mounted (ex: E:\)
+			- change directory to ESP partition
+			- bcdboot C:\Windows /s E: /f EFI # create EFI bootloader in partition mounted as "E:" to boot windows from directory "C:\Windows"
+			- confirm windows bootloader already copied to ESP partition
 
 
