@@ -293,5 +293,37 @@ arch
 			- change directory to ESP partition
 			- bcdboot C:\Windows /s E: /f EFI # create EFI bootloader in partition mounted as "E:" to boot windows from directory "C:\Windows"
 			- confirm windows bootloader already copied to ESP partition
+		- configure grub to remember last booted operating system
+			- edit /etc/default/grub: change to: "GRUB_SAVEDEFAULT=true" and "GRUB_DEFAULT=saved"
+			- inside menuentry add "savedefault"
+		- configure grub to show boot message:
+			- edit /etc/default/grub: change "GRUB_CMDLINE_LINUX" and delete "quiet"
+		- configure grub to add "boot to command line" or "don't boot to desktop environment":
+			- information about runlevel:
+				```
+				0 – halt
+				1 – Single user mode
+				2 – Multiuser, without NFS
+				3 – Full multiuser mode
+				4 – unused
+				5 – X11
+				6 – reboot
+				```
+			- commonly used runlevel: 5 (boot to GUI), 3 (boot to CLI/TTY only)
+			- add menuentry in /etc/grub.d/40_custom: add boot option "3" (runlevel)
+			- example: linux /boot/vmlinuz 3
+		- configure grub to change loglevel (verbosity of boot message):
+			- information about loglevel:
+				```
+				0 - KERN_EMERG = emergency: stability/crash
+				1 - KERN_ALERT = alert: need immediate user attention
+				2 - KERN_CRIT = critical
+				3 - KERN_ERR = error: non-critical like device recognition or driver
+				4 - KERN_WARNING = warning
+				5 - KERN_NOTICE = notice: might be worth noting
+				6 - KERN_INFO = information: info about action performed by kernel
+				7 - KERN_DEBUG = debugging information
+				```
+			- edit /etc/default/grub: change to: "GRUB_CMDLINE_LINUX=loglevel=3"
 
 
