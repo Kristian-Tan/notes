@@ -240,7 +240,25 @@ arch
 			- kde: plasma
 			- mate: mate mate-extra
 		- after install: systemctl enable lxdm
+		- after install: edit file /etc/lxdm/lxdm.conf and change session=/usr/bin/startxfce4 (choose as desktop environment)
+			- xfce: session=/usr/bin/startxfce4
+			- gnome: gnome-session
+			- cinnamon: gnome-session-cinnamon
+			- kde: startplasma-x11
 		- NOTE: installing xorg and lxdm consume about 300MB, installing xfce4 and xfce4-goodies consume about 500MB
+		- NOTE: removed these xfce4-goodies: 
+			- xfce4-dict = internet dictionary client
+			- xfce4-eyes-plugin = cosmetic/gimmick plugin that will show eyes following cursor
+			- xfce4-genmon-plugin = plugin to monitor result of a command
+			- xfce4-mailwatch-plugin = plugin to watch for email
+			- xfce4-mpc-plugin = plugin to show media control (play-pause-next-etc) in panel
+			- xfce4-notes-plugin = plugin to take notes
+			- xfce4-screensaver = screensaver
+			- xfce4-smartbookmark-plugin = plugin to save internet bookmark
+			- xfce4-time-out-plugin = plugin to control how long computer should be used (user health)
+			- xfce4-timer-plugin = plugin to use timer/stopwatch
+			- xfce4-weather-plugin = plugin to show weather
+			- xfce4-xkb-plugin = plugin to switch keyboard layout
 	- configure wireless network access
 		- install packages: "iw iwd wpa_supplicant dialog"
 		- start iwd service: systemctl start iwd
@@ -325,5 +343,18 @@ arch
 				7 - KERN_DEBUG = debugging information
 				```
 			- edit /etc/default/grub: change to: "GRUB_CMDLINE_LINUX=loglevel=3"
-
-
+		- mount windows (ntfs) partition: 
+			- install "ntfs-3g" because linux kernel only understand how to read ntfs (cannot write, cannot change permission)
+			- mount with: mount /dev/sda3 /mnt/sda3
+	- configure touchpad to enable tapping as click (only for laptop)
+		libinput list-devices # identify the id of the touchpad
+		xinput list-props 12 # select your touchpad id here (example: 12)
+		xinput set-prop 12 "libinput Tapping Enabled" 1
+		# then add ```xinput set-prop ...``` command to be run on desktop environment login, for example, in xfce: start menu -> settings -> session and startup -> application autostart -> add
+- using archfi archdi install script: from https://github.com/MatMoul/archfi
+	- curl -L archfi.sf.net/archfi > archfi # or # curl -L matmoul.github.io/archfi > archfi
+	- sh archfi
+	- comments:
+		- provide easy installation, system work out of the box, may select what desktop environment to install, what packages to install etc., may need to have search engine ready to look for what each package do
+		- most/some packages have short (2-3 word) helpful description on what it is (reduce time needed to search for package name in internet)
+		- default (checked by default) packages are good enough to make sure system is not broken (ex: no sound, no GUI wifi menu, no GUI network setting)
