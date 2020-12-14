@@ -17,7 +17,6 @@
 - installable in multi platform (in android, iphone/ipad, windows, mac)
 - publishable to application markets (google playstore, microsoft store, but apple app store still needs some workaround)
 - other extensive capability that's currently developed/drafted
-    - notification 
     - share (intent) https://web.dev/web-share/ https://web.dev/web-share-target/
     - being target of a sharing (intent)
     - background geolocation (not officially supported yet!) https://github.com/RichardMaher/Brotkrumen
