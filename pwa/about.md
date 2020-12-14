@@ -6,17 +6,18 @@
 ## Capability
 - basically everything that web application can do
     - listing all kind of web API capability that your browser can do: https://whatwebcando.today/
-    - generic sensor (a.k.a. accelerometer) web API demo https://intel.github.io/generic-sensor-demos/
+    - generic sensor (a.k.a. accelerometer) web API demo: https://intel.github.io/generic-sensor-demos/
     - webassembly (running c++/rust/compiled language) in web like openCV
-    - generating/scanning QR (camera)
+    - generating/scanning QR (camera) https://www.sitepoint.com/create-qr-code-reader-mobile-website/ https://nimiq.github.io/qr-scanner/demo/
     - push notification (even when browser/app closed, example: firebase)
     - detect device going online/offline
     - access file on device / filesystem API https://web.dev/file-system-access/
+    - geolocation (like google maps)
 - offline/caching capability through service worker javascript
 - installable in multi platform (in android, iphone/ipad, windows, mac)
 - publishable to application markets (google playstore, microsoft store, but apple app store still needs some workaround)
 - other extensive capability that's currently developed/drafted
-    - notification
+    - notification https://gauntface.github.io/simple-push-demo/ (firebase, triggerred by custom HTTP request to firebase server)
     - share (intent) https://web.dev/web-share/ https://web.dev/web-share-target/
     - being target of a sharing (intent)
     - background geolocation (not officially supported yet!) https://github.com/RichardMaher/Brotkrumen
