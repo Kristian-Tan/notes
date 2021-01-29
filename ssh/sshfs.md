@@ -7,9 +7,7 @@ Filesystem over SSH (secure shell). Content of remote server (usually linux serv
 - install `sshfs` package (with apt/pacman/yum/etc.)
 - edit `/etc/fuse.conf`, uncomment `user_allow_other` (to enable non-root user to use sshfs)
 - create mount point (ex: `/home/kristian/mnt/ip99`)
-- run with command: ```bash
-sshfs -o allow_other,IdentityFile=/home/kristian/.ssh/id_rsa kristian@192.168.1.99:/ /home/kristian/mnt/ip99
-```
+- run with command: `sshfs -o allow_other,IdentityFile=/home/kristian/.ssh/id_rsa kristian@192.168.1.99:/ /home/kristian/mnt/ip99`
 - explanation:
     - specify to use ssh key stored in windows drive = ```/home/kristian/.ssh/id_rsa```
     - remote ssh user = ```kristian```
