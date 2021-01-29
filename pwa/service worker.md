@@ -137,4 +137,48 @@ self.addEventListener('fetch', function (event) {
 })
 ```
 
+### Example 4: generic network first strategy for converting PHP apps to PWA, WITH custom 'offline' page (improved)
+- see example 3
+- addition: will only cache GET
+```js
+self.addEventListener('fetch', function (event) {
+    //console.log("url: "+event.request.url+", mode: "+event.request.mode);
+    event.respondWith( // when fetch event happen,
+        fetch(event.request) // fetch resource from network (ex: make real HTTP request to webserver)
+        .then(function(response){ // when the request is fulfilled / success
+            //console.log("fetch.then url="+event.request.url);
+            if(event.request.method == "GET") { // only cache if the request's method is GET
+                //console.log("fetch.then cache url="+event.request.url);
+                var responseCopy = response.clone(); // clone/copy the response (since response cannot be used twice, it have to be cloned/copied explicitly)
+                caches.open(cacheName)
+                .then(function (cache) { // open cache
+                    cache.put(event.request, responseCopy); // put the copied/cloned response in cache
+                    //console.log("fetch.then cache.then url="+event.request.url);
+                })
+                //.catch(function (err) {
+                //    console.log("fetch.then cache.catch url="+event.request.url);
+                //});
+            }
+            return response; // respond the request with the real response
+        })
+        .catch(function(err) { // when the request is not fulfilled / failed to resolve HTTP request
+            //console.log("fetch.catch url="+event.request.url);
+            return caches.match(event.request) // seek the cache for matching response (check if the request was previously cached or not)
+            .then(function(response) { // note: seeking cache manager with caches.match() will never error/catch, but if cache not found the result/response will be undefined
+                if (response !== undefined) { // if matching cache found in cache manager (cache hit), return/respond to the request with cached content
+                    //console.log("fetch.catch.then url="+event.request.url);
+                    return response;
+                } else { // if no matching cache found in cache manager (cache miss),
+                    //console.log("fetch.catch.catch url="+event.request.url);
+                    return caches.match("offline") // seek the cache manager for your custom offline page (put your offline page path here)
+                    .then(function(responseOffline) {
+                        //console.log("fetch.catch.catch.then url="+event.request.url);
+                        return responseOffline; // return/respond to the request with cached-custom offline page
+                    });
+                }
+            });
+        })
+    )
+});
+```
 
