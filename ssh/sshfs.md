@@ -79,3 +79,11 @@ recommendation: save password so user don't need to input it every mount
 SiriKali can also be used for GUI frontend on linux if the user don't want to use command line
 - install sirikali by downloading from https://github.com/mhogomchungu/sirikali/releases or from PPA (debian based) or from AUR (arch based)
 - see usage above
+
+## How (macOS)
+- install brew (go to https://brew.sh and then copy paste to terminal)
+- run `brew cask`
+- run `brew install --cask osxfuse`
+- run `brew install sshfs`
+- run sshfs from terminal like on linux (see above)
+
