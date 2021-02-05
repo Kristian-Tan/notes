@@ -65,13 +65,14 @@ SiriKali is multiplatform frontend GUI for various secure filesystem (one of the
     - may check `auto mount volume` (if checked, will mount on startup, and will mount when clicking favorites -> mount all)
 - click "add" button
 - close window, back to sirikali main menu, click "favorites" button, select newly created sshfs volume to mount it
-recommendation: save password so user don't need to input it every mount
+
+#### SiriKali recommendation: save password so user don't need to input it every mount
 - favorites -> manage favorites
 - tab manage keys in wallet
 - radio button Windows DPAPI
 - set master password (can be empty)
 - select "volume path" from dropdown (example: `Sshfs kristian@192.168.1.99:/`)
-- enter your UNIX account password
+- enter your UNIX account password (ssh account password)
 - click add volume to selected wallet
 - next time before mount, the password field will already have value
 
