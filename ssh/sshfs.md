@@ -76,6 +76,11 @@ SiriKali is multiplatform frontend GUI for various secure filesystem (one of the
 - click add volume to selected wallet
 - next time before mount, the password field will already have value
 
+## How (Windows): sshfs manager 4every1 (not recommended)
+- install dokan 0.7.4
+- install sshfs manager 4every1 1.5.12.8
+- not compatible with latest linux ssh server (maybe, cause unknown)
+
 ## How (Linux): SiriKali
 SiriKali can also be used for GUI frontend on linux if the user don't want to use command line
 - install sirikali by downloading from https://github.com/mhogomchungu/sirikali/releases or from PPA (debian based) or from AUR (arch based)
