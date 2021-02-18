@@ -1,4 +1,5 @@
 There are too many standards
+
 - PEM (Privacy Enhanced Mail): Any kind of file encoded with base64. Usually contain certificate / public key
 - DER: Any kind of file encoded with binary DER. Usually certificate
 - CRT, CER, CERT: Certificate
