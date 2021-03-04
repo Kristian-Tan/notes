@@ -22,6 +22,7 @@
 ```sql
     GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'password'; FLUSH PRIVILEGES;
     FLUSH TABLES WITH READ LOCK;
+    -- do mysqldump here, then import the dump in slave server
     SHOW MASTER STATUS; -- note binary log file name and log position, then do mysqldump
     UNLOCK TABLES;
 ```
