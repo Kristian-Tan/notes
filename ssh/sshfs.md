@@ -7,7 +7,7 @@ Filesystem over SSH (secure shell). Content of remote server (usually linux serv
 - install `sshfs` package (with apt/pacman/yum/etc.)
 - edit `/etc/fuse.conf`, uncomment `user_allow_other` (to enable non-root user to use sshfs)
 - create mount point (ex: `/home/kristian/mnt/ip99`)
-- run with command: `sshfs -o allow_other,IdentityFile=/home/kristian/.ssh/id_rsa kristian@192.168.1.99:/ /home/kristian/mnt/ip99`
+- run with command: `sshfs -o allow_other,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,IdentityFile=/home/kristian/.ssh/id_rsa kristian@192.168.1.99:/ /home/kristian/mnt/ip99`
 - explanation:
     - specify to use ssh key stored in windows drive = ```/home/kristian/.ssh/id_rsa```
     - remote ssh user = ```kristian```
@@ -15,8 +15,9 @@ Filesystem over SSH (secure shell). Content of remote server (usually linux serv
     - mount remote ssh filesystem at root = ```:/```
     - mount it to mount point = ```/home/kristian/mnt/ip99```
 - frequently used options:
-    - allow_other = allow non-root user to access mounted filesystem
-    - IdentityFile = ssh key used to login to remote ssh server
+    - ```allow_other``` = allow non-root user to access mounted filesystem
+    - ```IdentityFile``` = ssh key used to login to remote ssh server
+    - ```reconnect,ServerAliveInterval=15,ServerAliveCountMax=3``` = reconnect if the server is unavailable for 1 minute (check if server alive every 15 seconds, allows server to not respond for up to three alive checks)
 
 ## How (Windows): WSL
 WSL (Windows Subsystem for Linux) is a way to run Linux in Windows, it is advertised to reach near native performance (although it still have some stability issue)
@@ -60,7 +61,7 @@ SiriKali is multiplatform frontend GUI for various secure filesystem (one of the
             - option `idmap=user` will translate the file uid of remote filesystem to uid of local user
             - option `StrictHostKeyChecking=no` will make key fingerprint relaxed (always trust server's key)
         - set to use network drive: `UseNetworkDrive=yes`
-        - automatically reconnect when connection failed (will timeout after 1 minute): `reconnect,ServerAliveInterval=15,ServerAliveCountMax=3`
+        - reconnect if the server is unavailable for 1 minute (check if server alive every 15 seconds, allows server to not respond for up to three alive checks): `reconnect,ServerAliveInterval=15,ServerAliveCountMax=3`
     - check `create network drive`
     - may check `auto mount volume` (if checked, will mount on startup, and will mount when clicking favorites -> mount all)
 - click "add" button
