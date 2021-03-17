@@ -54,7 +54,7 @@ SiriKali is multiplatform frontend GUI for various secure filesystem (one of the
     - ssh port number: `22`
     - volume type: not changeable `sshfs`
     - mount point path: `Z:`
-    - mount options: `create_file_umask=0000,create_dir_umask=0000,umask=0000,idmap=user,StrictHostKeyChecking=no,UseNetworkDrive=yes,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3`
+    - mount options: `create_file_umask=0000,create_dir_umask=0000,umask=0000,idmap=user,StrictHostKeyChecking=no,UseNetworkDrive=yes,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,uid=-1,gid=-1`
         - explanation: mount options can be `key=value` or just `flag`, separated by comma
         - default options: `create_file_umask=0000,create_dir_umask=0000,umask=0000,idmap=user,StrictHostKeyChecking=no`
             - option `create_file_umask` and `create_dir_umask` and `umask` set file mode's umask, this needs to be set in sshfs since sshfs-win DOES NOT respect UNIX umask (will make file permission become rwx------)
@@ -62,10 +62,18 @@ SiriKali is multiplatform frontend GUI for various secure filesystem (one of the
             - option `StrictHostKeyChecking=no` will make key fingerprint relaxed (always trust server's key)
         - set to use network drive: `UseNetworkDrive=yes`
         - reconnect if the server is unavailable for 1 minute (check if server alive every 15 seconds, allows server to not respond for up to three alive checks): `reconnect,ServerAliveInterval=15,ServerAliveCountMax=3`
+        - set to use server's default uid (userid) and gid (groupid): `uid=-1,gid=-1` ; this option is sshfs-win specific since it's not in sshfs(1) manual, reference: https://github.com/billziss-gh/sshfs-win/issues/180#issuecomment-634471364
     - check `create network drive`
     - may check `auto mount volume` (if checked, will mount on startup, and will mount when clicking favorites -> mount all)
 - click "add" button
 - close window, back to sirikali main menu, click "favorites" button, select newly created sshfs volume to mount it
+
+#### SiriKali recommendation: using SSH key
+- when adding new volume (or when editing existing volume in favorites -> manage favorites -> {select volume} -> options -> edit)
+- input `IdentityFile path (optional)` with your ssh private key (usually in C:/Users/yourname/.ssh/id_rsa)
+- check `volume does not use a password`
+- save
+- next time before mount, the password field will be disabled and your ssh key will be used instead
 
 #### SiriKali recommendation: save password so user don't need to input it every mount
 - favorites -> manage favorites
