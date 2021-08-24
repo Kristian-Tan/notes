@@ -61,3 +61,50 @@ sudo ip link set bridge0 up
     - guest 1, interface eth0 192.168.1.102/24 gateway 192.168.1.101
     - guest 2, interface eth0 192.168.1.103/24 gateway 192.168.1.101 
 - test ping from virtual machine to host, from virtual machine to other virtual machine, and from host to virtual machine
+
+### Scripted Shortcut
+- in host:
+```bash
+# configure bridge
+ip link add name bridge0 type bridge
+ip link set bridge0 up
+ip addr add 192.168.1.101/24 dev bridge0
+# enable ip forward
+echo "1" > /proc/sys/net/ipv4/ip_forward
+# add iptables rule for ip forward
+iptables --flush # flush / delete all rule
+iptables --table nat --flush # delete all rule inside NAT table
+iptables --delete-chain # delete optional user defined chain
+iptables --zero # zero the packet and byte counters in all chains
+iptables --policy INPUT ACCEPT # set policy for chain INPUT to ACCEPT
+iptables --policy OUTPUT ACCEPT # set policy for chain OUTPUT to ACCEPT
+iptables --policy FORWARD ACCEPT # set policy for chain FORWARD to ACCEPT
+iptables --table nat --append POSTROUTING --out-interface wlo1 --source 192.168.1.0/24 --jump MASQUERADE # add rule in table "nat", rule "postrouting", set out interface to wlan0, match only if source from 192.168.1.0/24, then do masquerade
+```
+- in guest:
+```bash
+ip link set dev ens3 up
+ip addr add 192.168.1.142/24 dev ens3
+ip route add default via 192.168.1.101 dev ens3
+```
+
+### Autoconfigured IP Address Via DHCP
+- in host: install dhcpd (dhcp daemon, might be in package 'dhcp'/'isc-dhcp-server')
+- configure /etc/dhcpd.conf, example:
+```
+option domain-name "mylan";
+option domain-name-servers 8.8.8.8;
+default-lease-time 3600;
+max-lease-time 7200;
+authoritative;
+subnet 192.168.1.0 netmask 255.255.255.0 {
+        option routers                  192.168.1.101;
+        option subnet-mask              255.255.255.0;
+        option domain-search            "mylan";
+        option domain-name-servers      8.8.8.8;
+        range   192.168.1.201   192.168.1.254;
+}
+subnet 172.16.0.0 netmask 255.255.255.0 {
+}
+```
+- start dhcpd4 service: ```sudo systemctl start dhcpd4```
