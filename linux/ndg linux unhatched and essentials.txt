@@ -112,6 +112,7 @@ text editor: vi, vim, nano
 linux is a kernel, GNU is a free software collection, GNU/Linux means linux kernel bundled with GNU software (often distributed as a distribution)
 linux is open source, linux is written in C in order to be more platform independent
 linux encourage CLI usage
+linux is UNIX-like: UNIX was originally OS developed at AT&T Bell Labs 1970s. It has been modified and forked into many variations. Now UNIX is trademark and specification owned by industry consortium the Open Group. Now only software certified by the Open Group may be called UNIX. Despite adopting most if not all of the requirements of the UNIX specification, Linux has not been certified.
 
 ###2 - Operating System
 decision point when choosing OS: role/function, life cycle, stability, compatibility (backward), cost, interface
@@ -376,6 +377,7 @@ windows archiving algorithm: zip - unzip
 ###10 - Working With Text
 viewing text file content
 	cat (concatenate): show all content in terminal
+    split: split content of one big file into many small file
 	more: use pagination, always available on all distribution
 		last screen: b (back)
 		next screen: space
@@ -388,6 +390,14 @@ viewing text file content
 		flag "-f": follow file (display as file grows/appended), used to monitor log file
 	tr: translate (remap) characters, ex: "tr 'A-Z' 'a-z' < myfile.txt" makes uppercase letters to lowercase
 	wc: word count (show number of newline, word, byte count of files in order)
+    nl: number line of file
+    od: octal dump, for viewing binary file
+    sed: stream editor, for editing (replacing, deleting, inserting) text
+        replace match only: ```s/PATTERN/REPLACEMENT/``` (add "g" after last "/" for replace all)
+        insert before pattern / append after pattern: ```/PATTERN/i\TEXT\``` or ```/PATTERN/a\TEXT\```
+        delete line that contains pattern: ```/PATTERN/d```
+        replace line that contains pattern: ```/PATTERN/c\REPLACEMENT```
+        note: sed can also use other delimiter than '/', e.g.: ```'s/PATTERN/REPLACEMENT/g'``` is equal to ```'s;PATTERN;REPLACEMENT;g'```
 
 I/O redirection
 	streams
@@ -412,6 +422,7 @@ viewing plaintext delimited database (ex: csv)
 		flag "-t": specify field delimiter (ex: comma used for csv)
 		flag "-k": specify field number to be sorted
 		flag "-n": sort numerically (ex: with numeric sort: 9 < 40 < 222 < 3000, with alphabetic sort: 222 < 3000 < 40 < 9)
+        flag "-u": only show unique output (delete duplicates)
 		ex: 
 			year,distribution,author # this line is not in file
 			1991,Linux,Torvalds
@@ -462,6 +473,38 @@ viewing plaintext delimited database (ex: csv)
 		flag "-v": invert match (NOT CONTAINS)
 		flag "-w": match whole word
 		flag "-c": count number of matches
+        flag "-R": recursive on directory
+        flag "-i": case insensitive
+        flag "-E": extended regular experssion
+        flag "-F": not as regular experssion (search only for literals)
+    uniq: eliminate duplicate (also optionally count frequency of duplicate)
+        flag "-c": display frequency of duplicate
+        ex:
+            SQL: SELECT col7, COUNT(*) FROM ... GROUP BY col7
+            BASH: cut -f7 -d: /etc/passwd | sort | uniq -c
+            3 /bin/bash
+            1 /bin/sync
+            23 /usr/sbin/nologin
+    paste: join table by line number
+        flag "-d": specify field delimiter (default: tab character)
+    join: join table by specific field / column (more advanced version of paste)
+        flag "-t": specify field delimiter (default: tab character)
+        flag "-1 NUM1 -2 NUM2": specify which field number to be joined on
+        ex:
+            sample data above, and this file below (named tbl2.csv)
+            firstname,lastname # this line is not in file
+            Dennis,Richie
+            Andrew,Tanenbaum
+            Ken,Thompson
+            Linus,Torvalds
+        ex:
+            SQL: SELECT ... FROM tbl1 INNER JOIN tbl2 ON tbl1.author=tbl2.lastname
+            BASH: join -1 3 -2 2 -t',' tbl1.csv tbl2.csv
+            Richie,Dennis,1970,Unix
+            Tanenbaum,Andrew,1987,Minix
+            Thompson,Ken,1970,Unix
+            Torvalds,Linus,1991,Linux
+
 
 regular expression
 	basic regular expression (mostly used with grep)
