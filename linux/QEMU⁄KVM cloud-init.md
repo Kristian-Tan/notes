@@ -4,6 +4,7 @@
 - cloud-init is a way to configure VM disk image (e.g.: ```qcow2```) without modifying the disk itself (so a cloud provider can have 1 master cloud-init image, then just copy it when user wants new VM)
 - components is: 'cloud-init' VM disk image, 'cloud-init disk' (often called config.img/seed.img/init.img)
 - after VM image boots, it runs 'cloud-init' systemd target, which reads 'cloud-init disk', then configure machine based on that configuration (e.g.: configure ssh key, add users)
+- method specified below is often called 'nocloud' data source https://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html
 
 ### Components
 

@@ -125,7 +125,7 @@ KeyIdentifier [
 - there seems to be a lot of pitfalls (windows line ending / CF LF, byte-order mark / BOM, SSL certificate, HTTP code must be 200, etc.)
 - tools to help developing/debugging digital assets link verification:
     - debugging if signature verification failed: ```adb logcat -v brief | grep -e OriginVerifier -e digital_asset_links```
-    - checking if google _approves_ your DALV: https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://web.domain.here.com&relation=delegate_permission/common.handle_all_urls
+    - checking if google _approves_ your DALV: https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://web.domain.here.com&relation=delegate_permission/common.handle_all_urls (remember to allow your webserver to accept request with ```User-Agent: GoogleAssociationService``` header)
     - android studio -> Tools -> App Links Assistant
 - sources:
     - https://developer.android.com/training/app-links/verify-site-associations
