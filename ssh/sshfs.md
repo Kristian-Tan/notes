@@ -101,4 +101,5 @@ SiriKali can also be used for GUI frontend on linux if the user don't want to us
 - run `brew install --cask osxfuse`
 - run `brew install sshfs`
 - run sshfs from terminal like on linux (see above)
+- you might need to add these options to make sshfs more permissive: `defer_permissions,allow_recursion` https://github.com/osxfuse/osxfuse/wiki/Mount-options
 

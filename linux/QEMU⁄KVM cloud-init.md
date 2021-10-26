@@ -70,7 +70,7 @@ qemu-system-x86_64 -enable-kvm \
 - qemu option explanation:
   - ```-nographic```
     - do not use graphical window output (print output in terminal)
-    - without this some VM will show message 'boot without initrd' and stuck there
+    - without this some VM will show message 'boot without initrd' and stuck there (without this, click 'view'>'serial0' in qemu window)
     - only use this for image that boots without grub / without bootloader (e.g.: ubuntu cloud and newer)
   - ```-device virtio-net-pci,netdev=net00 -netdev id=net00,type=user,hostfwd=tcp::2222-:22```
     - add device using 'virtio-net-pci' driver, using 'net00' as backend
@@ -130,3 +130,10 @@ qemu-system-x86_64 -enable-kvm \
 
 ## NOTE
 - sometime if the 'cloud-init disk' content have been changed, the guest cloud image just don't reload / re-read its config; try to change it's meta-data (instance-id, hostname, local-hostname)
+
+## Proxmox
+- reference: https://gist.github.com/KrustyHack/fa39e509b5736703fb4a3d664157323f
+- create VM via web interface (SYSTEM > graphic card = serial terminal 0, SYSTEM > SCSI controller = VirtIO SCSI, HARDDISK = 0.001GB) or command line ```qm create 102 --memory 1024 --net0 virtio,bridge=vmbr0```
+- import your cloud-init disk image (can only be done via command line currently) ```qm importdisk 102 bionic-server-cloudimg-amd64.img local-lvm```
+- set disk to scsi and point it to newly imported disk: ```qm set 102 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-102-disk-1``` (can also be done via web interface)
+- set display to serial terminal 0 and set serial port 0 to socket: ```qm set 102 --serial0 socket --vga serial0``` (can also be done via web interface)
