@@ -22,3 +22,11 @@
   - extract, then edit `index.html`, point it to your json file
   - serve it in webserver (ex: in `/var/www/html/` of apache, or `c:/xampp/htdocs` of xampp, or `php -S 0.0.0.0:8080` in directory, or other node.js server)
   - API consumer/user can try the API directly in browser if it's hosted in same server
+
+### Quick Convertion of JSON Data to OpenAPI Schema
+- https://stackoverflow.com/questions/49277137/how-to-generate-a-swagger-definition-from-sample-json
+- https://stackoverflow.com/questions/7341537/tool-to-generate-json-schema-from-json-data
+TL;DR:
+- copy paste your JSON example data to any one of these:
+- https://roger13.github.io/SwagDefGen/
+- https://easy-json-schema.github.io/
