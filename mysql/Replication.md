@@ -92,3 +92,29 @@ START REPLICA FOR CHANNEL 'master2';
 SHOW REPLICA STATUS FOR CHANNEL 'master1';
 SHOW REPLICA STATUS FOR CHANNEL 'master2';
 ```
+
+## One Slave Multiple Database From Same Master (one master database replicated to multiple database in same slave host)
+- same as above
+- example: db_master in host 192.168.1.101, replicated to db_master, db_copy_1, db_copy_2 (all 3 db in same slave host)
+- it might sound strange, but this is just experiment / proof of concept (possible use case: blue-green deployment strategy)
+- enable binlog in master
+- in slave:
+
+```sql
+CHANGE MASTER TO MASTER_HOST='192.168.1.101', MASTER_USER='slave_user', MASTER_PASSWORD='password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107 FOR CHANNEL 'master';
+CHANGE MASTER TO MASTER_HOST='192.168.1.101', MASTER_USER='slave_user', MASTER_PASSWORD='password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107 FOR CHANNEL 'copy_1';
+CHANGE MASTER TO MASTER_HOST='192.168.1.101', MASTER_USER='slave_user', MASTER_PASSWORD='password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107 FOR CHANNEL 'copy_2';
+
+CHANGE REPLICATION FILTER REPLICATE_WILD_DO_TABLE = ('db_master.%') FOR CHANNEL 'master';
+CHANGE REPLICATION FILTER REPLICATE_REWRITE_DB = ((db_master, db_copy_1)) FOR CHANNEL 'copy_1';
+CHANGE REPLICATION FILTER REPLICATE_REWRITE_DB = ((db_master, db_copy_2)) FOR CHANNEL 'copy_2';
+
+START REPLICA FOR CHANNEL 'master';
+START REPLICA FOR CHANNEL 'copy_1';
+START REPLICA FOR CHANNEL 'copy_2';
+
+-- show status
+SHOW REPLICA STATUS FOR CHANNEL 'master';
+SHOW REPLICA STATUS FOR CHANNEL 'copy_1';
+SHOW REPLICA STATUS FOR CHANNEL 'copy_2';
+```

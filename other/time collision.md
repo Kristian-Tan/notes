@@ -35,8 +35,30 @@ B      |---------|
 ```
 identify with: A.start < B.start AND A.end < B.end AND A.end > B.start
 
+
+
+#### (revision) have intersecting time
+```
+A |---------|
+B      |---------|
+```
+or
+```
+A      |---------|
+B |---------|
+```
+B.start BETWEEN A.start AND A.end (1)
+OR
+A.start BETWEEN B.start AND B.end (2)
+OR
+A.end BETWEEN B.start AND B.end (1)
+OR
+B.end BETWEEN A.start AND A.end (2)
+
+
+
 #### ends faster (invert)
-```st
+```
 A |----|
 B |---------|
 ```
