@@ -1,6 +1,8 @@
 # LXC / Linux Container / LXD
 
 ## About
+- LXC is system container (like docker container, but instead of just one app, LXC is for complete system/OS)
+- in term of performance and isolation, LXC is middle ground between full virtualization (e.g.: QEMU/KVM) and containerization (e.g.: docker)
 - executing command inside ```cgroup``` isolation, also ```chroot``` to container's rootfs
 - default command to be executed first is ```/sbin/init``` inside rootfs (can be overridden by setting ```lxc.init.cmd``` config)
 - (maybe) LXC booting only do the init process, unlike full virtualization that do BIOS, bootloader, kernel, then init
@@ -52,43 +54,77 @@ lxc.net.0.ipv4.gateway = 192.168.1.101
 - disk storage (e.g.: raw disk image) location: `/var/lib/vz/images/<id>/*`
 - config (e.g.: network, num of cpu/mem/swap, disk images) location: `/etc/pve/lxc/<id>.conf`
 
-#### Migrating Proxmox QEMU/KVM to Proxmox LXC:
-- command: https://github.com/my5t3ry/machine-to-proxmox-lxc-ct-converter/blob/master/convert.sh
+#### Migrating Proxmox QEMU/KVM to Proxmox LXC
+- reference: https://github.com/my5t3ry/machine-to-proxmox-lxc-ct-converter/blob/master/convert.sh
+- ssh host roles:
+  - proxmox hypervisor (called "proxmox")
+  - guest OS that will be converted (called "guest")
+  - copier that can connect via ssh to guest OS and copy its whole filesystem, proxmox host can also play this role (called "copier")
+- run this command on proxmox host:
 ```bash
-collectFS() 
-{
+collectFS() {
     tar -czvvf - -C / \
-    --exclude="sys" \
-    --exclude="dev" \
-    --exclude="run" \
-    --exclude="proc" \
-    --exclude="*.log" \
-    --exclude="*.log*" \
-    --exclude="swap.img" \
-    .
+      --exclude="sys" \
+      --exclude="dev" \
+      --exclude="run" \
+      --exclude="proc" \
+      --exclude="*.log" \
+      --exclude="*.log*" \
+      --exclude="*.gz" \
+      --exclude="swap.img" \
+      --exclude="swapfile" \
+  .
 }
-ssh root@your-qemu-kvm-virtual-machine "$(typeset -f collectFS); collectFS" > /var/lib/vz/template/cache/your-template-name.tar.gz
 ```
-  - then, create new LXC container from web interface, use the newly created template
-  - this process require free space 3x disk size of QEMU/KVM disk (1x for source disk being copied, 1x for temporary template.tar.gz file, 1x for newly created LXC disk)
-- when lxc not booting correctly, debug the init process by this command: `lxc-start -n <id> -F --logfile log.log -l debug`
-- quirks
-  - to use some kernel functions (e.g.: FUSE when mounting SSHFS, NFS, running docker containers inside LXC) might need to enable feature flags in options > features
-  - privileged vs unprivileged containers:
-    - QEMU/KVM is more secure than privileged LXC container (e.g.: kernel panic inside container will not affect hypervisor), but LXC container is faster
-    - privileged container's init process runs as uid=0 (root); while unprivileged container's init process runs as non-root (e.g. uid=10000)
-    - some feature might be available in privileged container only (especially when migrating from QEMU/KVM virtual machine)
-    - converting privileged to unprivileged or other way around: must backup, then restore from that backup (cannot just change config, because all file's metadata inside vm disk must be re-mapped to/from uid=0/root), this process involves copying all files in vm disk (might be slow/long running; might need free space 3x size of vm disk)
-  - not all linux distro supported: see supported distro in `/usr/share/perl5/PVE/LXC/Setup/` and `/usr/share/lxc/config/`
-    - supported distros are: alpine, arch, centOS, debian, devuan, fedora, gentoo, SUSE, ubuntu
-    - may choose unmanaged distro, but most likely not working
-    - different proxmox version might support different distro version (e.g.: PVE.7.1-12 supports for ubuntu only for ubuntu 12.04 to 22.04)
-    - debian is generally more widely supported than ubuntu
-  - disk image must be RAW or LVM or bind mount (cannot use QCOW2)
-  - user's systemd unit file might not start (reason unknown)
-  - edge case: before migrating to lxc, systemd unit file `ssh.service` was changed to make it run on port 443 instead of 22, after migrated to lxc, the listening port becomes 22 because LXC reads `ssh.socket` systemd unit file instead of `ssh.service`
+- make sure copier can ssh to guest OS as root
+- then copy the filesystem image from proxmox host (via copier if needed):
+```bash
+# without copier
+ssh root@guest "$(typeset -f collectFS); collectFS" > /var/lib/vz/template/cache/my_custom_filesystem.tar.gz
+
+# via copier
+ssh -J kristian@copier root@guest "$(typeset -f collectFS); collectFS" > /var/lib/vz/template/cache/my_custom_filesystem.tar.gz
+```
+- use the newly copied filesystem as LXC template (can create from web GUI)
+- this process require free space 3x disk size of QEMU/KVM disk (1x for source disk being copied, 1x for temporary template.tar.gz file, 1x for newly created LXC disk)
+- when lxc not booting correctly, debug the init process by this command: `lxc-start -n <id> -F -l DEBUG -o /tmp/my_lxc.log`
+
+#### Quirks when Migrating Proxmox QEMU/KVM to Proxmox LXC: Feature
+- to use some kernel functions (e.g.: FUSE when mounting SSHFS, NFS, running docker containers inside LXC) might need to enable feature flags in options > features
+
+#### Quirks when Migrating Proxmox QEMU/KVM to Proxmox LXC: Security
+- QEMU/KVM is more secure than privileged LXC container (e.g.: kernel panic inside container will not affect hypervisor), but LXC container is faster, so unprivileged container is preferred if possible (e.g.: need mknod, permission problem)
+- privileged container's init process runs as uid=0 (root); while unprivileged container's init process runs as non-root (e.g. uid=10000)
+- some feature might be available in privileged container only (especially when migrating from QEMU/KVM virtual machine)
+- converting privileged to unprivileged or other way around: must backup, then restore from that backup (cannot just change config, because all file's metadata inside vm disk must be re-mapped to/from uid=0/root), this process involves copying all files in vm disk (might be slow/long running; might need free space 3x size of vm disk)
+
+#### Quirks when Migrating Proxmox QEMU/KVM to Proxmox LXC: Distro
+- not all linux distro supported: see supported distro in `/usr/share/perl5/PVE/LXC/Setup/(distro).pm` and `/usr/share/lxc/config/(distro).conf`
+- supported distros are: alpine, arch, centOS, debian, devuan, fedora, gentoo, SUSE, ubuntu
+- may choose unmanaged distro, but most likely not working
+- different proxmox version might support different distro version (e.g.: PVE.7.1-12 supports for ubuntu only for ubuntu 12.04 to 22.04)
+- debian is generally more widely supported than ubuntu
+
+#### Quirks when Migrating Proxmox QEMU/KVM to Proxmox LXC: Others
+- disk image must be RAW or LVM or bind mount (cannot use QCOW2)
+- user's systemd unit file might not start (reason unknown)
+- example case: before migrating to lxc, systemd unit file `ssh.service` was changed to make it run on port 443 instead of 22, after migrated to lxc, the listening port becomes 22 because LXC reads `ssh.socket` systemd unit file instead of `ssh.service`
+- when assigning 2 interface with different IP address, both MAC address replied to ARP request (might cause problem with some network appliance)
+- template filesystem did not contain FHS some directories (e.g.: /sys /dev/ /run /proc), fix:
+```bash
+pct mount <id>
+mount # shows that mount point is in /var/lib/lxc/<id>/rootfs
+cd /var/lib/lxc/<id>/rootfs
+mkdir sys
+mkdir dev
+mkdir run
+mkdir proc
+cd ~
+pct nmount <id>
+```
+- configurations: network (static/dynamic IPv4/IPv6, default gateway/route, nameserver/dns, vlan tagging) must be set from proxmox web interface instead of set from inside VM
+- consider if guest OS ssh keys need to be regenerated or use existing (can backup then restore `/etc/ssh` directory content)
 
 ## TO DO:
-- without root
-- mount
+- mount bind
 - creating your own lxc template (e.g. via debootstrap)
