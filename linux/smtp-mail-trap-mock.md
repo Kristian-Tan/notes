@@ -6,10 +6,10 @@
 
 ## Installation
 - install postfix, e.g.: `apt install postfix`
-- run smtp-sink, e.g.: `smtp-sink -v -d %d.%H.%M.%S -u kristian -R /home/kristian/ 0.0.0.0:1025 10`
+- run smtp-sink, e.g.: `mkdir ~/smtp-sink ; cd ~/smtp-sink ; smtp-sink -v -d %d.%H.%M.%S 0.0.0.0:1025 10`
     - `-v` = verbose (optional)
-    - `-u kristian` = run as user kristian
-    - `-R /home/kristian` = write captured mail to /home/kristian
+    - `-u kristian` = run as user kristian (optional, may require superuser if set)
+    - `-R /home/kristian` = write captured mail to /home/kristian (optional, may require superuser if set), **if not set, will write email to current directory**
     - `-d %d.%H.%M.%S` = write email to file in filename format day.hour.minute.second
     - `0.0.0.0:1025 10` = bind to 0.0.0.0 (all interface/all IP address), port 1025 (allow non-root), set backlog to 10 (should be enough for development)
 
